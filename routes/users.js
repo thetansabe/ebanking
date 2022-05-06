@@ -11,4 +11,6 @@ router.get('/', function(req, res, next) {
 const userController = require('../controller/UserController')
 router.post('/register', userController.register)
 
+//1.2 dang nhap lan dau
+router.post('/login', userController.login)
 module.exports = router;
