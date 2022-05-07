@@ -2,8 +2,13 @@ POST http://localhost:3000/users/login
 content-type: application/json
 
 {
-    "username" : "xinchao",
-    "password" : "123456"
+    "username" : "8584950818",
+    "password" : "dJmLM&"
 }
 
-##
+###
+GET http://localhost:3000/users/testJWT
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNzRhYmEzZGQ5ZWUwZDgzMGNkY2JkNCIsImFjY19zdGF0dXMiOjAsImlhdCI6MTY1MTkzODg3OSwiZXhwIjoxNjUxOTM4ODk5fQ.rrOPaE_8h52sy-rTxil5Oljd5yFsUIczqOyq8EA5tyg
+###
+POST http://localhost:3000/users/refreshJWT
+

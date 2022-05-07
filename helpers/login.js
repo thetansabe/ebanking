@@ -1,58 +1,79 @@
 const Account = require('../model/Account')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+
+const dotenv = require('dotenv').config({path: './.env'})
 
 async function userLogin(username, password){
     const validate = validateAccount(username, password)
     
     const responseObject = await validate
 
-    validate
-    .then(resultObj => {
-        console.log('result obj: ', resultObj)
-        if(resultObj.code !== 0) return resultObj.msg
-
-        if(resultObj.acc_status === 0){
-            //TH1: lan dau dang nhap
-            //dac diem: acc_info: 'default'; acc_status: 0
-    
-            //return res.json({code: 0, msg: 'Day la tai khoan default can doi mat khau', acc_status})
-            //front end khi bat duoc json nay -> chuyen trang doi mat khau gom:
-            //bat nhap username
-            //bat nhap pass moi
-            //bat nhap confirm pass moi
-            //thanh cong:
-            //update user: helpers/updateUser.js
-            //update pass & acc_status + 1
-            //front end chuyen thang den trang chu
-
-            return {code: 0, msg: 'Day la tai khoan default can direct den trang doi mat khau', acc_status: 0}
-        }else{
-            return {code: 0, msg: 'Khong phai default user, cho phep direct den trang chu', acc_status: resultObj.acc_status}
-        }
-    })
-    .then(jsonMsg => {
-        return jsonMsg
-    })
-
     return responseObject
-     
+    
+    //neu acc_status = 0 -> doi mk
+    //acc_status != 0 -> direct thang toi trang chu
+
+    //front end khi bat duoc json nay -> chuyen trang doi mat khau gom:
+        //bat nhap username
+        //bat nhap pass moi
+        //bat nhap confirm pass moi
+        //thanh cong:
+        //update user: helpers/updateUser.js
+        //update pass & acc_status + 1
+        //front end chuyen thang den trang chu
 }
 
 async function validateAccount(username, password){
     try{
+        
         const doc = await Account.findOne({username: username})
 
         const cmp = bcrypt.compareSync(password, doc.password)
 
         if(!cmp) return {code: 101, msg: 'Sai mat khau'}
 
-        return {code: 0, msg: 'Dang nhap thanh cong', acc_status: doc.acc_status}
+        //xu li JWT
+        const accessToken = generateAccessToken(doc._id, doc.acc_status)
+        const refreshToken = generateRefreshToken(doc._id, doc.acc_status)
+        
+        //luu cookie
+        
+        return {code: 0, msg: 'Dang nhap thanh cong', accessToken, refreshToken}
     }
     catch (err){
         return {code: 100, msg: 'Tai khoan khong ton tai'}
     }
 }
 
+function generateAccessToken(id, status){
+    const accessToken = jwt.sign(
+        { id, acc_status : status }, 
+        process.env.SECRET_JWT_ACCESS_KEY,
+        {expiresIn: "20s"}
+    )
+
+    return accessToken
+}
+
+function generateRefreshToken(id, status){
+    const refreshToken = jwt.sign(
+        {
+            id,
+            acc_status: status,
+        }, 
+        process.env.SECRET_JWT_REFRESH_KEY,
+        {expiresIn: "365d"}
+    )
+
+    return refreshToken
+}
+
+
+//STORING TOKEN:
+//1) local storage:
 module.exports = {
     userLogin,
+    generateAccessToken,
+    generateRefreshToken,
 }
