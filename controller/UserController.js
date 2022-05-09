@@ -2,8 +2,9 @@ var multiparty = require('multiparty')
 const register = require('../helpers/register')
 const login = require('../helpers/login')
 const jwt = require('jsonwebtoken')
-const async = require('hbs/lib/async')
 const dotenv = require('dotenv').config({path: './.env'})
+const changePassword = require('../helpers/changePassword.js')
+const userInfo = require('../helpers/userInfo')
 
 //temporary refresh token db
 let refreshTokensList = []
@@ -95,7 +96,65 @@ const UserController = {
         //xoa access token o local storage
         //cong viec cua front end
         return res.json({code: 0, msg: 'Logout nho xoa access token nha front end'})
-    }
+    },
+
+    changePasswordFirstTime : (req,res) => {
+        const newPass = req.body.newPassword
+        const confirmNewPass = req.body.confirmPassword
+        const user = req.user
+        
+        const handleChangePassword = changePassword.saveNewPassToDb(user, newPass, confirmNewPass)
+        handleChangePassword.then(response => {
+            return res.json(response)
+        })
+    },
+
+    changePassword : (req, res) => {
+        const oldPass = req.body.oldPassword
+        const newPass = req.body.newPassword
+        const confirmNewPass = req.body.confirmPassword
+        const user = req.user
+        
+        const handleChangePassword = changePassword.changePass(user, oldPass,newPass, confirmNewPass)
+        handleChangePassword.then(response => {
+            return res.json(response)
+        })
+    },
+
+    viewInfo : async (req, res) =>{
+        const infos = await userInfo.getInfo(req.user.id)
+        return res.json(infos)
+    },
+
+    updateIdCard: async (req, res) => {
+        const form = new multiparty.Form()
+
+        form.parse(req, async (err, fields, files) => {
+            if (err) return res.status(400).send('unknown error when catch multi form data')
+            const updateReturnMsg = await userInfo.updateIdentity(files, req.user.id)
+            return res.json(updateReturnMsg)
+        })
+          
+    },
+
+    forgetPassword: async (req, res) => {
+        //user nhap email va sdt -> check
+        const email = req.body.email
+        const phoneNumber = req.body.phoneNumber
+
+        const responseMsg = await changePassword.forgetPassword(email, phoneNumber)
+        if(responseMsg.code === 0){
+            console.log('redirect trang reset pass')
+            //return res.redirect('http://localhost:3000/users/reset_password')
+        }
+        return res.json(responseMsg)
+    },
+
+    // resetPassword: async (req, res) => {
+    //     const PIN = req.body.PIN
+    //     const responseMsg = await changePassword.resetPassword(PIN)
+    //     return res.json(responseMsg)
+    // }
 }
 
 module.exports = UserController

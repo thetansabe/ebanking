@@ -3,12 +3,47 @@ content-type: application/json
 
 {
     "username" : "8584950818",
-    "password" : "dJmLM&"
+    "password" : "xinchao123"
 }
 
 ###
-GET http://localhost:3000/users/testJWT
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNzRhYmEzZGQ5ZWUwZDgzMGNkY2JkNCIsImFjY19zdGF0dXMiOjAsImlhdCI6MTY1MTkzODg3OSwiZXhwIjoxNjUxOTM4ODk5fQ.rrOPaE_8h52sy-rTxil5Oljd5yFsUIczqOyq8EA5tyg
-###
 POST http://localhost:3000/users/refreshJWT
 
+###
+POST http://localhost:3000/users/logout
+
+###
+PUT http://localhost:3000/users/changePassword/firstLogin
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNzRhYmEzZGQ5ZWUwZDgzMGNkY2JkNCIsImFjY19zdGF0dXMiOjEsImlhdCI6MTY1MjAxNDg3MiwiZXhwIjoxNjUyMDE4NDcyfQ.gjcgzwj73az7YQk63_yQ60dGARlmWzaj8domfAl_GBo
+content-type: application/json
+
+{
+    "newPassword": "helloworld123",
+    "confirmPassword" : "helloworld123"
+}
+
+###
+PUT http://localhost:3000/users/changePassword
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNzRhYmEzZGQ5ZWUwZDgzMGNkY2JkNCIsImFjY19zdGF0dXMiOjEsImlhdCI6MTY1MjAxNDg3MiwiZXhwIjoxNjUyMDE4NDcyfQ.gjcgzwj73az7YQk63_yQ60dGARlmWzaj8domfAl_GBo
+content-type: application/json
+
+{
+    "oldPassword" : "xinchao12",
+    "newPassword": "xinchao123",
+    "confirmPassword" : ""
+}
+
+###
+GET http://localhost:3000/users/userInfo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNzRhYmEzZGQ5ZWUwZDgzMGNkY2JkNCIsImFjY19zdGF0dXMiOjEsImlhdCI6MTY1MjAxOTUzMiwiZXhwIjoxNjUyMDIzMTMyfQ.1JWvxToCKLqxEMmayb-Eg5FSiBYOpcSkOvscA8guYq4
+
+###
+POST http://localhost:3000/users/forgetPassword
+content-type: application/json
+
+{
+    "email": "thetannguyen193@gmail.com",
+    "phoneNumber" : "0123456789"
+}
+
+###

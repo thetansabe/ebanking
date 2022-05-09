@@ -144,4 +144,5 @@ function mailing(receiverMail, username, pass){
 }
 module.exports = {
     userRegister,
+    moveFile,
 }

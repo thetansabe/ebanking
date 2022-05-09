@@ -39,7 +39,7 @@ async function validateAccount(username, password){
         
         //luu cookie
         
-        return {code: 0, msg: 'Dang nhap thanh cong', accessToken, refreshToken}
+        return {code: 0, msg: 'Dang nhap thanh cong', accessToken, refreshToken, status_for_direct: doc.acc_status}
     }
     catch (err){
         return {code: 100, msg: 'Tai khoan khong ton tai'}
@@ -50,7 +50,7 @@ function generateAccessToken(id, status){
     const accessToken = jwt.sign(
         { id, acc_status : status }, 
         process.env.SECRET_JWT_ACCESS_KEY,
-        {expiresIn: "20s"}
+        {expiresIn: "1h"}
     )
 
     return accessToken
