@@ -65,6 +65,13 @@ const middelwareController =
             req.user = user
             next()
         })
+    },
+    verifyForTransfer(req, res, next) {
+        jwt.verify(req.params.PIN, process.env.SECRET_JWT_PIN , (err, data) => {
+            if(err) return res.json({code: 115, msg: 'Your PIN is not valid or out of date'})
+            req.transferData = data;
+            next()
+        })
     }
 }
 
