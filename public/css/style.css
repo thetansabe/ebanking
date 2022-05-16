@@ -1,0 +1,418 @@
+.body{
+    background-color: #EFF1F1;
+    min-height: 100vh;
+    padding: 24px;
+    width: 100%;
+}
+
+.my_container{
+    border-radius: 12px;
+    background-color: white;
+    padding-top: 10px;
+
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;
+}
+
+.header_navbar{
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10;
+}
+
+.header_navbar-logo{
+    margin-left: 8px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.header_navbar-logo_brand{
+    line-height: 10px;
+    margin-left: 8px;
+    margin-top: 10px;
+}
+
+.logo_brand-name{
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.logo_brand-span{
+    color: #B5B9C3;
+    font-size: 14px;
+}
+
+.header_navbar-right_navbar{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.header_navbar-signout{
+    margin-right: 12px;
+}
+
+.header_navbar-signout_button{
+    margin-top: calc(25% - 14px);
+}
+
+.header_navbar-user{
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: 10px;
+}
+
+.header_navbar-user_info{
+    line-height: 10px;
+    margin-top: 10px;
+    margin-left: 8px;
+}
+
+.header_navbar-user_name{
+    font-size: 16px;
+    font-weight: 500;
+    color: #A2ABC7;
+}
+
+.header_navbar-user_id{
+    font-size: 12px;
+    color: #B5B9C3;
+}
+
+.header_navbar-user_icon{
+    height: 50px;
+    width: 50px;
+}
+
+.content{
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.left_navbar{
+    background-color: #51B4DD;
+    width: fit-content;
+}
+
+.left_navbar-item{
+    padding: 12px;
+    cursor: pointer;
+    color: #86D0E9;
+
+}
+
+.left_navbar-item:hover {
+    background-color: #65C3E3;
+    color: #FFFFFF;
+}
+
+.left_navbar-icon{
+    font-size: 32px;
+    text-align: center;
+    margin-left: calc(25% + 10px);
+}
+
+.left_navbar-title{
+    font-size: 20px;
+    text-align: center;
+    margin: 0;
+}
+
+.content_index{
+    background-color: #FBFBFB;
+    flex: 1;
+
+    
+}
+
+.notifications{
+    display: block;
+    background-color: #FFFFFF;
+    padding:  12px;
+    margin: 12px;
+
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+
+.notifications-title{
+    color: #838383;
+    font-size: 18px;
+}
+
+.notifications-empty{
+    color: #E5E9ED;
+    font-size: 16px;
+}
+
+.notifications-list{
+    list-style: none;
+}
+
+.notifications-item{
+    text-decoration: none;
+}  
+
+.dashboard_account-brief_info{
+    display: block;
+    background-color: #FFFFFF;
+    padding:  12px;
+    margin: 12px;
+
+}
+
+.brief-wrapper{
+    background-color: #5FC5BB;
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.brief-upper{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.brief_info-account{
+    
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.brief_info-user{
+    line-height: 12px;
+    margin-bottom: 20px;
+}
+
+.brief_info-user_title{
+    color: #85D5CC;
+    font-size: 20px;
+}
+
+.brief_info-user_data{
+    color: white;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+/* history dashboard*/
+.dashboard_history{
+    background-color: white;
+    padding: 12px;
+    margin: 12px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+
+.dashboard_history-header{
+    display: flex;
+    justify-content: space-between;
+
+}
+
+.dashboard_history-left{
+
+}
+
+.dashboard_history-title{
+    color: #6E6E6E;
+    margin-bottom: 14px;
+
+    display:-webkit-box;
+	-webkit-line-clamp:1;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	word-break: break-word;
+}
+
+/* .dashboard_history-right{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+} */
+
+.right_attribute-date{
+    display: block;
+    padding: 4px 10px;
+    background-color: #E5E9ED;
+    border-radius: 16px;
+    color: #BBC6CF;
+    text-align: center;
+    margin-bottom: 14px;
+}
+
+.right_attribute-debit{
+    display: block;
+    padding: 4px 10px;
+    background-color: #F7DCDC;
+    border-radius: 16px;
+    color: #EFB3B2;
+    text-align: center;
+    margin-bottom: 14px;
+}
+
+.transfer-source-name{
+    color: #7D89B1;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.transfer-source-message{
+    color: #E5E9ED;
+    font-size: 16px;
+
+    display:-webkit-box;
+	-webkit-line-clamp:1;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	word-break: break-word;
+}
+
+.transfer-source-date{
+    margin-top: 25px;
+    color: #C6CCD6;
+    font-size: 18px;
+    text-align: center;
+}
+
+.transfer-source-debit{
+    margin-top: 20px;
+    
+    font-size: 20px;
+    font-weight: 600;
+
+    display:-webkit-box;
+	-webkit-line-clamp:1;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	word-break: break-word;
+}
+
+.transfer-source-debit.receive{
+    color: #73BEAC; 
+}
+
+.transfer-source-debit.send{
+    color: #EE706A; 
+}
+
+/* account */
+.account_content{
+    display: flex;
+    justify-content: center;
+    flex: 1;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;  
+    background-color: #FFFFFF;
+    margin: 12px;
+    padding: 20px;
+
+    flex-direction: column;
+    margin-top: 0;
+}
+
+.account_content-avatar_wrapper{
+    position: relative;
+    cursor: pointer;
+    margin-bottom: 70px;
+}
+
+.account_content-avatar{
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    /* padding: 8px; */
+    margin-left: 50%;
+}
+
+.account_content-avatar_img{
+    width: 100px;
+    height: 100px;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.account_content-icon{
+    font-size: 24px;
+    position: absolute;
+    right: calc(50% - 20px);
+    top: 0;
+}
+
+.profile_wrapper{
+    
+}
+
+.input_form{
+    margin-bottom: 10px;
+    
+}
+
+.input_form-title{
+
+}
+
+.input_form-holder{
+    display: flex;
+    padding: 8px 14px;
+    border: 1px solid #EEEBEE;
+    border-radius: 12px;
+    /* margin-bottom: 10px; */
+    justify-content: space-between;
+    width: 100%;
+}
+
+.input_form-holder.input-disable{
+    background-color: #ECE9EC;
+}
+
+.input_form-pass_btn{
+    
+}
+
+.input_form-title.submission{
+    font-weight: 600;
+    color: #28A745;
+}
+
+.input_form-icon_submit{
+    z-index: 100;
+    margin-top: 4px;
+    cursor: pointer;
+}
+
+/* Tranfer */
+.transfer_content{
+    display: flex;
+    flex: 1;
+    padding: 20px
+}
+
+.transfer_content-payee_box{
+    display: block;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    width: 100%;
+
+    padding: 20px;
+}
+
+.payee_box-search{
+    
+}
+
+.payee_box-input{
+    display: flex;
+    border-radius: 8px;
+    border: 1px solid #F2F2F3;
+    padding: 12px;
+    justify-content: space-between;
+}
+
+.payee_box-icon_search{
+    
+}

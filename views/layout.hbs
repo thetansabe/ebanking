@@ -1,10 +1,82 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>{{title}}</title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    {{{body}}}
-  </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HiFi EBank</title>
+    <link rel="icon" href="images/avatar/check.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://kit.fontawesome.com/160602fecf.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    
+    <div class="body">
+        <div class="my_container bg-white">
+            <div class="header_navbar">
+                <div class="header_navbar-logo">
+                    <div class="header_navbar-logo_icon">
+                        <img src="images/avatar/check.png" alt="ebank_icon">
+                    </div>
+
+                    <div class="header_navbar-logo_brand">
+                        <p class="logo_brand-name">HiFi Ebanking</p>
+                        <span class="logo_brand-span">Bank the right way</span>
+                    </div>
+                </div>
+                
+
+                <div class="header_navbar-right_navbar">
+
+                    <div class="header_navbar-signout">
+                        <a href="/" type="button" class="btn btn-outline-danger header_navbar-signout_button">Sign Out</a>
+                    </div>
+
+                    <div class="header_navbar-user">
+                        <img src="images/avatar/unknown_person.png" alt="avatar" class="header_navbar-user_icon">
+                        <div class="header_navbar-user_info">
+                            <p class="header_navbar-user_name">John Smith</p>
+                            <span class="header_navbar-user_id">USER ID: 123456789</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="content">
+                <div class="left_navbar">
+                    <div class="left_navbar-item">
+                        <i class="fas fa-chart-line left_navbar-icon"></i>
+                        <p class="left_navbar-title">Dash Board</p>
+                    </div>
+
+                    <div class="left_navbar-item">
+                        <i class="fas fa-file-invoice-dollar left_navbar-icon"></i>
+                        <p class="left_navbar-title">Profile</p>
+                    </div>
+
+                    <div class="left_navbar-item">
+                        <i class="fas fa-exchange left_navbar-icon"></i>
+                        <p class="left_navbar-title">Fund Transfer</p>
+                    </div>
+
+                    <div class="left_navbar-item">
+                        <i class="fas fa-credit-card left_navbar-icon"></i>
+                        <p class="left_navbar-title">Buy Cards</p>
+                    </div>
+                </div>
+    
+                {{{body}}}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Optional JavaScript -->
+    <script src="js/script.js"></script>
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
 </html>
