@@ -9,5 +9,5 @@ router.post('/recharge', rechargeValidator, walletController.recharge);
 router.post('/transfer', transferValidator, walletController.transfer);
 router.get('/transfer/:PIN', middlewareController.verifyForTransfer, walletController.something)
 router.post('/add', walletController.add);
-
+router.post('/addOTP', walletController.createOTP)
 module.exports = router;

@@ -2,6 +2,8 @@ const { validationResult } = require('express-validator');
 const CreditCard = require('../model/CreditCard');
 const TransferHistory = require('../model/TransferHistory');
 const Wallet = require('../model/Wallet');
+const OTP = require('../model/OTP');
+const createRandomOTP = require('../helpers/createRandomOTP')
 const Account = require('../model/Account');
 const transferEmail = require('../helpers/transfer')
 const PhoneCard = require('../model/PhoneCard');
@@ -537,7 +539,17 @@ const WalletController = {
     },
 
     async createOTP(req, res) {
-        
+        const code = createRandomOTP(6);
+        const otp = new OTP({
+            code
+        })
+
+        await otp.save()
+        .then(savedOTP => {
+            res.json({
+                data: savedOTP
+            })
+        })
     }
 }
 
