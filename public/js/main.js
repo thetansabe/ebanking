@@ -217,19 +217,21 @@ if(transfer){
       
       document.querySelector('.transfer_box-form_input.user_id').value = user_id
     }
-
-    /////formatting amount inpu
     
+    let dataBodyFetch = {}
 
-    //handle submit transfer
+    //pop up transfer modal
     function handleTransfer(){
       const user_id = document.querySelector('.transfer_box-form_input.user_id').value
       const amount  = document.querySelector('.transfer_box-form_input.money_amount').value
       const renderTotal = document.querySelector('.transfer-confirm_total')
       const renderMsg = document.querySelector('.transfer_box-invalid_input')
-
-      renderMsg.innerText = ''
+      const renderFee = document.querySelector('.transfer-confirm_total.transfer-confirm_fee')
       
+      renderTotal.innerText = ''
+      renderMsg.innerText = ''
+      renderFee.innerText = ''
+
       const amount_str = amount.split(' ')[0]
       
       const str_arr = amount_str.split(',')
@@ -244,17 +246,33 @@ if(transfer){
         
       }else{
         
-        const transfer_int = parseInt(amount_int)
-        let totalTransfer = Math.ceil(transfer_int + (transfer_int*5/100))
+        let transfer_int = parseInt(amount_int)
+        let feeTransfer = Math.ceil(transfer_int*5/100)
 
-        totalTransfer = convertToStr(totalTransfer)
-        renderTotal.innerText = `${totalTransfer} VND`
+        dataBodyFetch = {amount: transfer_int, fee: feeTransfer}
+
+        transfer_int = convertToStr(transfer_int)
+        feeTransfer = convertToStr(feeTransfer)
+
+        renderTotal.innerText = `${transfer_int} VND`
+        renderFee.innerText = `${feeTransfer} VND`
         $('#transferModal').modal('show')
       }
       
     }
 
+    //handle confirm transfer
+    function confirmedTransfer(){
 
+      //check xem PIN dung chua
+
+      //fetch api
+      const chargedAccount = document.querySelector('input[name="fee_payer"]:checked').value
+
+      dataBodyFetch = {...dataBodyFetch, chargedAccount}
+
+      console.log('xu li confirm transfer', dataBodyFetch)
+    }
 }
 
 

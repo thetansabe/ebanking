@@ -118,17 +118,31 @@
         </button>
       </div>
       <div class="modal-body">
-        <h6>Insert PIN to confirm spending <span class="transfer-confirm_total">0 VND</span> (+5% transfer fee) for transfer</h6>
-        <p>This PIN is only available in 1 minute:</p>
+        <h6>Insert PIN to confirm transfer: <span class="transfer-confirm_total">0 VND</span></h6>
+        <h6>Transfer fee (5%): <span class="transfer-confirm_fee transfer-confirm_total">0 VND</span></h6>
+        <h6>Choose account to be charged fee: </h6>
+        <div class="fee_radio">
+            <div class="">
+                <input type="radio" name="fee_payer" id="fee_payer-sender" value="you">
+                <label for="fee_payer-sender">You</label>
+            </div>
 
-        <input type="number">
+            <div class="">
+                <input type="radio" name="fee_payer" id="fee_payer-receiver" value="receiver">
+                <label for="fee_payer-receiver">Receiver</label>
+            </div>
+            
+        </div>
+        <h6>This PIN is only available in 1 minute:</h6>
+
+        <input type="number" class="transfer_input-PIN">
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <button 
             type="button" 
             class="btn btn-primary" 
-            onclick="handlePurchase()"
+            onclick="confirmedTransfer()"
         >
             Confirm
         </button>

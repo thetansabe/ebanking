@@ -128,7 +128,6 @@
 .content_index{
     background-color: #FBFBFB;
     flex: 1;
-
     
 }
 
@@ -208,6 +207,10 @@
     padding: 12px;
     margin: 12px;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    height: 300px;
+    
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .dashboard_history-header{
@@ -258,6 +261,31 @@
     margin-bottom: 14px;
 }
 
+.transfer-source.brief_box{
+    display: grid;
+    grid-template-columns: 20% 80%;
+    gap: 4px 4px;
+    cursor: pointer;
+}
+
+.transfer-source_avatar-box{
+    border-radius: 50%;
+    background-color: #F5EEE5;
+    padding: 12px;
+}
+
+.transfer-source.brief_box:hover{
+    background-color: #E9DBDA;
+    border-radius: 12px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.transfer-source-avatar{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 .transfer-source-name{
     color: #7D89B1;
     font-size: 20px;
@@ -266,7 +294,7 @@
 }
 
 .transfer-source-message{
-    color: #E5E9ED;
+    color: #6E6E6E;
     font-size: 16px;
 
     display:-webkit-box;
@@ -340,6 +368,17 @@
 
 .detail_box-message{
     padding: 0 16px;
+}
+
+.fee_radio{
+    font-weight: 500;
+    color: #EA4C89;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.transfer_input-PIN{
+    margin: 0 auto;
 }
 
 /* account */
@@ -759,12 +798,23 @@
     width: 100%;
 }
 
-.deposit_form-wrapper{
+.deposit_form-balance_box{
+    background-color: #ECF9F4;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
 
+.balance_box-title{
+    font-size: 18px;
+    color: #5E7F73;
+}
+
+.balance_box-amount{
+    color: #6442C8;
+    font-size: 30px;
 }
 
 .deposit_wrapper-title{
-    color: #B7D7FF;
+    color: #007BFF;
     font-weight: 600;
     font-size: 30px;
     margin-bottom: 12px;
