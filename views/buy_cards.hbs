@@ -1,0 +1,198 @@
+<div class="buy_cards-content">
+    <div class="row buy_cards-content_row">
+        <div class="col-lg-7 col-sm-12 buy_cards-item_col">
+
+            <div class="buy_cards-header">
+                <div class="buy_cards-header_box">
+                    <h6 class="header_box-title">Only buy 5 cards with same network at a time:</h6>
+                    <p class="header_box-count">Count: 
+                        <span class="header_box-count_number">0</span> /5
+                    </p>
+                </div>
+
+                <div class="">
+                    <h6 class="header_box-title">Reset all your choices</h6>
+                    <button type="button" onclick="resetSelection()" class="btn btn-outline-primary">Reset</button>
+                </div>
+            </div>
+
+            <div class="buy_cards-item">
+                <h6 class="buy_cards-item_title">
+                    Viettel
+                </h6>
+
+                <div class="buy_cards-item_list">
+                    <div card_type="Viettel" class="item_list-item" onclick="turnOnSelection(this)">
+                        10,000 VND x<span class="item_list-item_quantity">0</span>
+                    </div>
+                    
+                    
+                    <div card_type="Viettel" class="item_list-item" onclick="turnOnSelection(this)">
+                        20,000 VND x<span class="item_list-item_quantity">0</span>
+                    </div>
+
+                    <div card_type="Viettel" class="item_list-item" onclick="turnOnSelection(this)">
+                        50,000 VND x<span class="item_list-item_quantity">0</span>
+                    </div>
+
+                    <div card_type="Viettel" class="item_list-item" onclick="turnOnSelection(this)">
+                        100,000 VND x<span class="item_list-item_quantity">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="buy_cards-item">
+                <h6 class="buy_cards-item_title">
+                    Mobifone
+                </h6>
+
+                <div class="buy_cards-item_list">
+                    <div card_type="Mobifone" class="item_list-item" onclick="turnOnSelection(this)">
+                        10,000 VND x<span class="item_list-item_quantity">0</span>
+                    </div>
+                    
+                    
+                    <div card_type="Mobifone" class="item_list-item" onclick="turnOnSelection(this)">
+                        20,000 VND x<span class="item_list-item_quantity">0</span>
+                    </div>
+
+                    <div card_type="Mobifone" class="item_list-item" onclick="turnOnSelection(this)">
+                        50,000 VND x<span class="item_list-item_quantity">0</span>
+                    </div>
+
+                    <div card_type="Mobifone" class="item_list-item" onclick="turnOnSelection(this)">
+                        100,000 VND x<span class="item_list-item_quantity">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="buy_cards-item">
+                <h6 class="buy_cards-item_title">
+                    Vinaphone
+                </h6>
+
+                <div class="buy_cards-item_list">
+                    <div card_type="Vinaphone" class="item_list-item" onclick="turnOnSelection(this)">
+                        10,000 VND x<span class="item_list-item_quantity">0</span>
+                    </div>
+                    
+                    
+                    <div card_type="Vinaphone" class="item_list-item" onclick="turnOnSelection(this)">
+                        20,000 VND x<span class="item_list-item_quantity">0</span>
+                    </div>
+
+                    <div card_type="Vinaphone" class="item_list-item" onclick="turnOnSelection(this)">
+                        50,000 VND x<span class="item_list-item_quantity">0</span>
+                    </div>
+
+                    <div card_type="Vinaphone" class="item_list-item" onclick="turnOnSelection(this)">
+                        100,000 VND x<span class="item_list-item_quantity">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5 col-sm-0">
+            <div class="buy_cards-bill">
+                <h6 class="bill_title">Purchase details</h6>
+
+                <ul class="bill_list list-group list-group-flush">
+                    <li class="list-group-item bill_list-item">
+                        Service: <span class="bill_list-item_span">Buying Phone Cards</span>
+                    </li>
+
+                    <li class="list-group-item bill_list-item">
+                        Phone number: <span class="bill_list-item_span phone_number">123456789</span>
+                    </li>
+
+                    <li class="list-group-item bill_list-item">
+                        Network provider: <span class="bill_list-item_span phone_network"></span>
+                    </li>
+
+                    <li class="list-group-item bill_list-item">
+                        Cards info:
+                        <div class="bill_list-item_card_list">
+                            {{!-- JS render --}}
+                            
+                        </div>
+                        
+                    </li>
+
+                    <li class="list-group-item bill_list-item">
+                        Service fee: <span class="bill_list-item_span">0 VND</span>
+                    </li>
+                </ul>
+
+                <div class="bill_list-total">
+                    <h6 class="bill_list-total_title">Total:</h6>
+                    <span class="bill_list-total_amount">0 VND</span>
+                </div>
+
+                <button 
+                    type="button" 
+                    class="btn btn-outline-danger mt-4 btn-lg btn-block buy_cards-btn"
+                    data-toggle="modal" 
+                    data-target="#exampleModalCenter"
+                    disabled
+                >
+                        Purchase
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Confirm Purchase</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h6>
+            Insert PIN to confirm spending <span class="bill_list-confirm_total">0 VND</span> for buying cards
+        </h6>
+        
+        <p>This PIN is only available in 1 minute:</p>
+
+        <input type="number">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button 
+            type="button" 
+            class="btn btn-primary" 
+            onclick="handlePurchase()"
+        >
+            Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="manap" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Purchase successfully</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h3>Recharge Code: </h3>
+        <div class="purchase_success-box">
+            <h6 class="purchase_success-box_title">11117345 - Viettel</h6>
+            <p class="purchase_success-box_code">*100*342542345234592385#</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

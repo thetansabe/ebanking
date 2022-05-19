@@ -107,6 +107,12 @@
     color: #FFFFFF;
 }
 
+[selected_nav]
+{
+    background-color: #65C3E3;
+    color: #FFFFFF;
+}
+
 .left_navbar-icon{
     font-size: 32px;
     text-align: center;
@@ -256,6 +262,7 @@
     color: #7D89B1;
     font-size: 20px;
     font-weight: 500;
+    cursor: pointer;
 }
 
 .transfer-source-message{
@@ -297,6 +304,42 @@
 
 .transfer-source-debit.send{
     color: #EE706A; 
+}
+
+
+.detail_container{
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+
+.detail_box{
+    
+}
+
+.detail_box-title{
+    color: #6E6E6E;
+    font-weight: 500;
+    font-size: 20px;
+}
+
+.detail_box-value{
+    color: #65C3E3;
+    font-weight: 600;
+}
+
+.detail_box-value.status{
+    display: block;
+    padding: 4px 12px;
+    color: white;
+    background-color: yellow;
+    border-radius: 12px;
+    width: 50%;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    text-align: center;
+}
+
+.detail_box-message{
+    padding: 0 16px;
 }
 
 /* account */
@@ -411,8 +454,383 @@
     border: 1px solid #F2F2F3;
     padding: 12px;
     justify-content: space-between;
+
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.payee_box-input_holder{
+    border: none;
+    margin: 0;
+    width: 88%;
 }
 
 .payee_box-icon_search{
+    align-items: center;
+    margin-top: 4px;
+}
+
+.payee_box-icon_del{
+    margin-top: 4px;
+    cursor: pointer;
+    z-index: 100;
+}
+
+.payee_box-accounts{
+    width: 100%;
+    background-color: white;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    padding: 18px;
+    border-radius: 12px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.payee_box-accounts_title{
+    margin-bottom: 14px;
+    color: #858585;
+}
+
+.payee_box-accounts_users{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.payee_box-accounts_users-wrapper{
+    cursor: pointer;
+}
+
+.accounts_users-item{
+    border-radius: 50%;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    padding: 18px;
+}
+
+.accounts_users-item_img{
+    width: 50px;
+    height: 50px;
+}
+
+.accounts_users-item_name{
+    text-align: center;
+    font-weight: 500;
+    color: #97A1C0;
+    margin: 0;
+}
+
+/* .accounts_users-item_id{
+    color: #E8EAEA;
+    text-align: center;
+} */
+
+.payee_box-payees{
     
+    
+}
+
+.payee_box-transfer_box{
+    width: 100%;
+    background-color: white;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    padding: 18px;
+    border-radius: 12px;
+}
+
+.transfer_box-title{
+    text-align: center;
+    margin-bottom: 14px;
+    color: #51B4DD;
+}
+
+.transfer_box-form{
+
+}
+
+.transfer_box-form_item{
+    margin-bottom: 14px;
+}
+
+.transfer_box-form_title{
+    color: #858585;
+    font-weight: 500;
+}
+
+.transfer_box-form_input{
+    border-radius: 12px;
+    border: 1px solid #F8F8F9;
+    width: 100%;
+    padding: 12px;
+}
+
+.transfer_box-form_balance{
+    display: block;
+    background-color: #65D8BD;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+
+.form_balance-item{
+
+}
+
+.form_balance-title{
+    color: #E5E9ED;
+    font-weight: 500;
+}
+
+.form_balance-amount{
+    font-size: 18px;
+    font-weight: 600;
+    color: #FFFFFF;
+}
+
+.transfer-confirm_total{
+    color: #EA4C89;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.transfer_box-invalid_input{
+    color: #EA4C89;
+}
+
+/* buy cards */
+.buy_cards-content{
+    background-color: #FBFBFB;
+    display: flex;
+    flex: 1;
+    padding: 20px;
+    width: 100%;
+}
+
+.buy_cards-content_row{
+    width: 100%;
+}
+
+.buy_cards-item{
+    background-color: white;
+    
+    padding: 12px;
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.buy_cards-item_title{
+    color: #6E6E6E;
+    font-weight: 600;
+    font-size: 18px;
+    margin-bottom: 12px;
+}
+
+.buy_cards-item_list{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.buy_cards-item_col{
+    
+}
+
+.item_list-item{
+    border: 1px solid #E6E8E8;
+    text-align: center;
+    padding: 8px 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    
+    color: rgba(0, 0, 0, 0.16);
+    font-weight: 500;
+}
+
+.item_list-item.selected{
+    border: 1px solid #51B4DD;
+    color: #51B4DD;
+}
+
+.buy_cards-header{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 14px;
+    background-color: #5FC5BB;
+    border-radius: 12px;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+    margin-bottom: 20px;
+}
+
+.header_box-title{
+    color: #6E6E6E;
+    font-weight: 600;
+    font-size: 18px;
+    margin-bottom: 12px;
+}
+
+.header_box-count{
+    color: white;
+    font-weight: 600;
+    font-size: 18px
+}
+
+.header_box-count_number{
+    font-size: 26px;
+    color: #6E6E6E
+}
+
+.buy_cards-bill{
+    background-color: white;
+    border: 1px solid #65C3E3;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+
+.bill_title{
+    color: #6E6E6E;
+    font-size: 24px;
+    font-weight: 500;
+}
+
+.bill_list-item_span{
+    color: #A2AED3;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.bill_list-item_card{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    color: #A2AED3;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.bill_list-total{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+.bill_list-total_title{
+    color: #5FC5BB;
+    font-weight: 500;
+    font-size: 24px;
+
+}
+
+.bill_list-total_amount{
+    color: #EA4C89;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.bill_list-confirm_total{
+    color: #EA4C89;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+/* Deposit */
+.dep_with-content{
+    background-color: #FBFBFB;
+    display: flex;
+    flex: 1;
+}
+
+.dep_with-row{
+    width: 100%;
+}
+
+.deposit_form-wrapper{
+    display: block;
+    background-color: white;
+    padding: 20px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    border-radius: 12px;
+    margin: 12px;
+    width: 100%;
+}
+
+.deposit_form-wrapper{
+
+}
+
+.deposit_wrapper-title{
+    color: #B7D7FF;
+    font-weight: 600;
+    font-size: 30px;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.deposit_form-form{
+
+}
+
+.deposit_form-box{
+    margin-bottom: 20px;
+}
+
+.deposit_form-title{
+    color: #6E6E6E;
+    font-weight: 500;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.deposit_form-input{
+    border-radius: 12px;
+    border: 1px solid #E5E9ED;
+    padding: 8px;
+    width: 100%;
+}
+
+.deposit_form-box_grid{
+    display: grid;
+    grid-template-columns: 50% 50%;
+    gap: 12px 12px;
+}
+
+.deposit_form-err{
+    margin-top: 8px;
+    color: #DC3545;
+}
+
+.deposit_wrapper-title.withdraw{
+    color: #DC3545;
+}
+
+.withdraw_inform-box{
+    margin: 12px 0;
+    padding: 10px;
+    display: block;
+    background-color: #5FC5BB;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+    border-radius: 12px;
+}
+
+.withdraw_inform-title{
+    color: #F7F7F8;
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.withdraw_inform-count{
+    font-size: 26px;
+    color: #DC3545;
+    font-weight: 700;
+}
+
+.withdraw-confirm_total{
+    font-size: 20px;
+    color: #DC3545;
+    font-weight: 700;
 }

@@ -14,4 +14,11 @@ router.get('/transfer', (req, res) => {
   res.render('transfer')
 })
 
+router.get('/buy_cards', (req, res) => {
+  res.render('buy_cards')
+})
+
+router.get('/deposit_withdraw', (req, res) => {
+  res.render('deposit_withdraw')
+})
 module.exports = router;

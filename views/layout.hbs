@@ -38,7 +38,7 @@
                         <img src="images/avatar/unknown_person.png" alt="avatar" class="header_navbar-user_icon">
                         <div class="header_navbar-user_info">
                             <p class="header_navbar-user_name">John Smith</p>
-                            <span class="header_navbar-user_id">USER ID: 123456789</span>
+                            <span class="header_navbar-user_id">Balance: 3,000,000 VND</span>
                         </div>
                     </div>
                 </div>
@@ -46,25 +46,32 @@
     
             <div class="content">
                 <div class="left_navbar">
-                    <div class="left_navbar-item">
+                    
+                    <div class="left_navbar-item dashboard" onclick="handleNavigate(this)">
                         <i class="fas fa-chart-line left_navbar-icon"></i>
                         <p class="left_navbar-title">Dash Board</p>
                     </div>
 
-                    <div class="left_navbar-item">
+                    <div class="left_navbar-item deposit_withdraw" onclick="handleNavigate(this)">
+                        <i class="fa-solid fa-money-bill-transfer left_navbar-icon"></i>
+                        <p class="left_navbar-title">Dep/Wdr</p>
+                    </div>
+
+                    <div class="left_navbar-item profile" onclick="handleNavigate(this)">
                         <i class="fas fa-file-invoice-dollar left_navbar-icon"></i>
                         <p class="left_navbar-title">Profile</p>
                     </div>
 
-                    <div class="left_navbar-item">
-                        <i class="fas fa-exchange left_navbar-icon"></i>
-                        <p class="left_navbar-title">Fund Transfer</p>
+                    <div class="left_navbar-item transfer" onclick="handleNavigate(this)">
+                        <i class="fa-solid fa-arrow-right-long left_navbar-icon"></i>
+                        <p class="left_navbar-title">Transfer</p>
                     </div>
 
-                    <div class="left_navbar-item">
+                    <div class="left_navbar-item buy_cards" onclick="handleNavigate(this)">
                         <i class="fas fa-credit-card left_navbar-icon"></i>
                         <p class="left_navbar-title">Buy Cards</p>
                     </div>
+                    
                 </div>
     
                 {{{body}}}
@@ -73,7 +80,7 @@
     </div>
     
     <!-- Optional JavaScript -->
-    <script src="js/script.js"></script>
+    <script src="js/main.js"></script>
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
