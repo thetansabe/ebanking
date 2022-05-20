@@ -37,6 +37,7 @@ const UserController = {
         
                 })
 
+                //req.user.acc_status = result.status_for_direct
                 return res.json(others)
             }
             return res.json(result)

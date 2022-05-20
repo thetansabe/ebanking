@@ -14,7 +14,27 @@ function navigateHighLight(){
 
 }
 
-navigateHighLight()
+const layout = document.querySelector('.my_container')
+if(layout){
+  navigateHighLight()
+
+  function handleSignOut(){
+    console.log('aloo')
+    fetch('/users/logout', {
+      method: 'post',
+      redirect: "follow"
+    })
+    .then(res => res.json())
+    .then(data => {
+      if(data.code === 0){
+        
+        window.location.href = '/login'
+      }
+        
+    })
+  }
+}
+  
 
 function handleNavigate(div){
   const navTo = div.querySelector('.left_navbar-title').innerText
@@ -559,5 +579,92 @@ if(dep_with){
   //api cash out here
   function handleWithdraw(){
     console.log('cash out here', cashOutFetchBody)
+  }
+}
+
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
+////////////////////////LOGIN
+const login = document.querySelector('.login_content')
+if(login){
+
+
+  function validateLogin(username, password){
+    let errors = []
+    username = username.toString()
+    if(!username){
+      errors.push({type: 1, msg: 'Missing username'})
+    }
+    if(username.length !== 10 && username.length !== 0){
+      errors.push({type: 1, msg: 'Username is a string of 10 digits'})
+    }
+
+    if(!password){
+      errors.push({type: 2, msg: 'Missing password'})
+    }
+    if(password.length < 6 && password.length !== 0){
+      errors.push({type: 2, msg: 'At least 6 char for password'})
+    }
+
+    return errors
+  }
+
+
+  function handleLogin(){
+    const username = document.querySelector('#login_box-username').value
+    const password = document.querySelector('#login_box-password').value
+    const renderLast = document.querySelector('.login_box-msg.last')
+    const renderUsername = document.querySelector('.login_box-msg.username')
+    const renderPass = document.querySelector('.login_box-msg.pass')
+
+    renderLast.innerText = ''
+    renderUsername.innerText = ''
+    renderPass.innerText = ''
+
+    const errors = validateLogin(username, password)
+    if(errors.length > 0){
+      errors.forEach(err => {
+        if(err.type === 1){
+          renderUsername.innerText = err.msg
+        }else{
+          renderPass.innerText = err.msg
+        }
+      })
+    }
+    else{
+      console.log('in here')
+      fetch('/users/login', {
+        method: 'post',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          username, password
+        }),
+        redirect: 'follow'
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data)
+        if(data.code === 0){
+          const headerAuth = `Bearer ${data.accessToken}`
+          localStorage.setItem('accessToken', data.accessToken)
+  
+          return 0 //good to go 
+        }
+        return data.msg
+      })
+      .then(lastRes => {
+        if(lastRes === 0)
+          window.location.href = '/'
+        else{
+          renderLast.innerText = lastRes
+        }
+      })
+    }
+    
+    
   }
 }

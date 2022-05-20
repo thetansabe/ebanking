@@ -884,3 +884,72 @@
     color: #DC3545;
     font-weight: 700;
 }
+
+
+/* login */
+.outside_lay{
+    padding: 0 20%;
+    background-color: #EEF0F0;
+    height: 100vh;
+    padding-top: 30px;
+}
+
+.login_content{
+    display: block;
+    width: 100%;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+    border-radius: 12px;
+    
+    padding: 20px;
+}
+
+.login_title{
+    text-align: center;
+    color: #51B4DD;
+}
+
+.login_wrapper{
+
+}
+
+.login_box{
+    margin-bottom: 20px;
+}
+
+.login_box-title{
+    color: #6E6E6E;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.login_box-input{
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid #EEF0F0;
+    padding: 8px;
+}
+
+.login_box-msg{
+    font-size: 20px;
+    color: #DC3545;
+    margin: 8px 0;
+}
+
+.login_box-options{
+    display: flex;
+    justify-content: center;
+    margin: 12px auto;
+    font-size: 18px;
+}
+
+.login_box-register{
+    margin-right: 12px;
+    color: #6E6E6E;
+}
+
+.login_box-forget{
+
+}
+
+/* others out side form */

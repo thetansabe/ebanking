@@ -9,6 +9,8 @@ const middelwareController =
         //console.log('body from verify JWT: ', req.body)
         // unauthorized code
         if(!token) return res.status(401).json('Forget to send token header')
+            //return res.redirect(303, '/login')
+        
 
         const accessToken = token.split(' ')[1]
         
@@ -16,8 +18,9 @@ const middelwareController =
             // console.log('err: ',err)
             // console.log('user: ',user)
             //wrong token -> forbidden code
-            if(err) return res.status(403).json('Token is not valid, you are forbidden to access this api')
-
+            if(err) 
+                return res.redirect(303, '/login')
+                //return res.status(403).json('Token is not valid, you are forbidden to access this api')
             //user la object (ta doc hieu duoc)
             //chua thong tin trong jwt
             req.user = user
@@ -65,7 +68,21 @@ const middelwareController =
             req.user = user
             next()
         })
-    }
+    },
+
+    renderUnAuth : (req, res, next) => {
+        const refreshToken = req.cookies.refreshToken
+        if (!refreshToken) 
+            return res.redirect(303, '/login')
+        
+        jwt.verify(refreshToken, process.env.SECRET_JWT_REFRESH_KEY, (err, user) => {
+            //check token ngau nhien
+            if(err) 
+                return res.redirect(303, '/login')
+            
+            next()
+        })          
+    },
 }
 
 module.exports = middelwareController

@@ -50,7 +50,7 @@ function generateAccessToken(id, status){
     const accessToken = jwt.sign(
         { id, acc_status : status }, 
         process.env.SECRET_JWT_ACCESS_KEY,
-        {expiresIn: "1h"}
+        {expiresIn: process.env.ACCESS_TOKEN_EXP}
     )
 
     return accessToken
@@ -63,7 +63,7 @@ function generateRefreshToken(id, status){
             acc_status: status,
         }, 
         process.env.SECRET_JWT_REFRESH_KEY,
-        {expiresIn: "365d"}
+        {expiresIn: process.env.REFRESH_TOKEN_EXP}
     )
 
     return refreshToken
