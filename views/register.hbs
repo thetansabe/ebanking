@@ -1,41 +1,58 @@
-<div id="main" class="container mt-5">
-			<div class="form_side">
-			
-			<form method="get" id="demoForm" class="centered" action="">
-				<h2 style="margin-top: 0.2rem; padding: 0.4rem;">SIGN UP</h2>
-				<p>
-					<label>Phone</label>
-					<input name="phone" type="text" placeholder="Phone number">
-				</p>
-				<p>
-					<label>Email</label>
-					<input id="email" type="text" name="email" placeholder="name@example.com">
-				</p>
-				<p>
-					<label>Date of Birth</label>
-					<input id="dateOfBirth" type="date" name="dateOfBirth" placeholder="MM/DD/YYYY">
-				</p>
-				<p>
-					<label>Address</label>
-					<input id="address" name="address" type="text" placeholder="Address">
-				</p>
-				<p>
-					<label>Frontside ID Card</label>
-					<input id="cmnd_front" name="cmnd_front" type="file" accept="image/png, image/gif, image/jpeg" required/>
-				</p>
-				<p>
-					<label>Backside ID Card</label>
-					<input id="cmnd_back" name="cmnd_back" type="file" accept="image/png, image/gif, image/jpeg" required/>
-				</p>
-				<hr>
-		
-				<p>
-				<button type="submit" class="registerbtn" value="Register" id="register"> Sign up
-				</p>
-				</form>
+<div class="login_content register">
+    <h1 class="login_title register">REGISTER</h1>
+    <div class="login_wrapper register">
+        <div class="login_box register">
+            <h6 class="login_box-title register">Full name</h6>
+            <input type="text" name="" id="register_box-name" class="login_box-input" placeholder="Nguyen Van A">
+            <span class="login_box-msg phonenumber register"></span>
+        </div>
 
-		</div>
-		<div class="container signin">
-			<p>Already signed up?<a href="login.html"> Sign in</a>.</p>
-		</div>
+        <div class="login_box register">
+            <h6 class="login_box-title register">Email</h6>
+            <input type="text" id="register_box-email" class="login_box-input register" placeholder="abc@gmail.com">
+            <span class="login_box-msg email register"></span>
+        </div>
+
+        <div class="login_box register">
+            <h6 class="login_box-title register">Date of birth</h6>
+            <input type="date" id="register_box-date_birth" class="login_box-input register">
+            <span class="login_box-msg date_birth register"></span>
+        </div>
+
+        <div class="login_box register">
+            <h6 class="login_box-title register">Address</h6>
+            <input type="text" id="register_box-address" class="login_box-input register" placeholder="123 Ly Tu Trong, Nha Trang, Khanh Hoa">
+            <span class="login_box-msg address register"></span>
+        </div>
+
+        <div class="login_box register">
+            <h6 class="login_box-title register">Front ID</h6>
+            <input type="file" accept="image/*" id="register_box-id_front" class="login_box-input register">
+            <span class="login_box-msg front_id register"></span>
+        </div>
+
+        <div class="login_box register">
+            <h6 class="login_box-title register">Back ID</h6>
+            <input type="file" accept="image/*" id="register_box-id_back" class="login_box-input register">
+            <span class="login_box-msg back_id register"></span>
+        </div>
+
+        <div class="login_box register">
+            <h6 class="login_box-title register">Phone number</h6>
+            <input type="number" name="" id="register_box-phone" class="login_box-input" placeholder="01357896348">
+            <span class="login_box-msg phonenumber register"></span>
+        </div>
+
+        
+
+       
+    </div>
+
+        <div>
+            <span class="login_box-msg last register"></span>
+        </div>
+
+        <div>
+           <button type="button" class="btn btn-primary btn-lg btn-block" onclick="handleRegister()">Register</button>
+       </div>
 </div>

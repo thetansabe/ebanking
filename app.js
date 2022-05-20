@@ -18,6 +18,14 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser('mysecretcookie'));
+app.use(require('express-session')())
+
+app.use((req, res, next) => {
+  res.locals.flash = req.session.flash
+  delete req.session.flash
+  next()
+})
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);

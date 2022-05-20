@@ -890,7 +890,7 @@
 .outside_lay{
     padding: 0 20%;
     background-color: #EEF0F0;
-    height: 100vh;
+    min-height: 100vh;
     padding-top: 30px;
 }
 
@@ -952,4 +952,20 @@
 
 }
 
-/* others out side form */
+/* register */
+.login_content.register{
+    
+    
+}
+
+.login_wrapper.register{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    gap: 12px 10px;
+}
+
+/* flash msg*/
+.flash_style{
+    position: fixed;
+}  

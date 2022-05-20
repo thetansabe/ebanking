@@ -32,4 +32,16 @@ router.get('/login', (req, res) => {
 router.get('/register', (req, res) => {
   res.render('register', {layout: 'outside_lay'})
 })
+
+router.get('/forget_pass', (req, res) => {
+  res.render('forget_pass', {layout: 'outside_lay'})
+})
+
+router.get('/change_pass', (req, res) => {
+  res.render('change_pass', {layout: 'outside_lay'})
+})
+
+router.get('/first_change', (req, res) => {
+  res.render('first_change', {layout: 'outside_lay'})
+})
 module.exports = router;

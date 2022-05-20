@@ -649,16 +649,24 @@ if(login){
       .then(data => {
         console.log(data)
         if(data.code === 0){
-          const headerAuth = `Bearer ${data.accessToken}`
+          const status = data.status_for_direct
+
           localStorage.setItem('accessToken', data.accessToken)
   
-          return 0 //good to go 
+          return status //good to go 
         }
         return data.msg
       })
       .then(lastRes => {
-        if(lastRes === 0)
+        if(lastRes === -1){
+          renderLast.innerText = 'Your password has been deactivated, please contact 18001008'
+        }
+        else if(lastRes === 0){
+          window.location.href = '/first_change'
+        }
+        else if(lastRes >= 1)
           window.location.href = '/'
+        
         else{
           renderLast.innerText = lastRes
         }
@@ -666,5 +674,99 @@ if(login){
     }
     
     
+  }
+}
+
+//////////////FORGET PASS
+const forget_pass = document.querySelector('.login_content.forget_pass')
+if(forget_pass){
+
+  function handleForgetPass(){
+
+    const email = document.querySelector('#forget_pass-email').value
+    const phoneNumber = document.querySelector('#forget_pass-phone_num').value
+    const pass = document.querySelector('#forget_pass-new_pass').value
+    const confirmPass = document.querySelector('#forget_pass-reenter_pass').value
+
+    //console.log(email, phoneNumber, pass, confirmPass)
+
+
+    ////validate xong roi moi cho phep fetch
+    fetch('users/forgetPassword', {
+      method: 'post',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({email, phoneNumber, pass, confirmPass})
+    })
+    .then(res => res.json())
+    .then(data => {
+      //data.code !== 0 => render loi ra day
+      console.log(data)
+    })
+  }
+}
+
+
+/////////////CHANGE PASS
+const change_pass = document.querySelector('.change_pass')
+if(change_pass){
+  function handleChangePass(){
+    const oldPassword = document.querySelector('#change_pass-old_pass').value
+    const newPassword = document.querySelector('#change_pass-new_pass').value
+    const confirmPassword = document.querySelector('#change_pass-reenter_pass').value
+    const authToken = `Bearer ${localStorage.getItem('accessToken')}`
+    
+    //console.log(oldPassword, newPassword, confirmPassword)
+    //////validate
+
+    //console.log('accessToken', localStorage.getItem('accessToken'))
+
+    //////validate thanh cong thi moi duoc fetch
+    fetch('/users/changePassword', {
+      method: 'put',
+      headers: {
+        'Authorization' : authToken,
+        'Content-Type' : 'application/json'
+      },
+      body: JSON.stringify({
+        oldPassword, newPassword, confirmPassword
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log(data)
+      if(data.code === 0){
+        window.location.href = '/'
+      }
+      //else render loi data.msg ra giao dien
+    })
+  }
+}
+
+///////////////first change
+const first_change = document.querySelector('.first_change')
+if(first_change){
+  function handleFirstChange(){
+    const newPassword = document.querySelector('#first_change-new_pass').value
+    const confirmPassword = document.querySelector('#first_change-reenter_pass').value
+    const authToken = `Bearer ${localStorage.getItem('accessToken')}`
+
+    console.log(newPassword, confirmPassword, authToken)
+    
+    //validate xong moi duoc fetch
+    fetch('http://localhost:3000/users/changePassword/firstLogin', {
+      method: 'put',
+      headers: {
+        'Authorization': authToken,
+        'Content-Type' : 'application/json'
+      },
+      body: JSON.stringify({newPassword, confirmPassword})
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log(data)
+      if(data.code === 0){
+        window.location.href = '/'
+      }
+    })
   }
 }

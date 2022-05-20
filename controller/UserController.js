@@ -106,6 +106,13 @@ const UserController = {
         
         const handleChangePassword = changePassword.saveNewPassToDb(user, newPass, confirmNewPass)
         handleChangePassword.then(response => {
+            if(response.code === 0){
+                req.session.flash = {
+                    type: 'success',
+                    intro: 'Success!',
+                    message: 'Change pass successfully, wait for admin authorization'
+                }
+            }
             return res.json(response)
         })
     },
@@ -118,6 +125,14 @@ const UserController = {
         
         const handleChangePassword = changePassword.changePass(user, oldPass,newPass, confirmNewPass)
         handleChangePassword.then(response => {
+            if(response.code === 0){
+                //set flash message
+                req.session.flash = {
+                    type: 'success',
+                    intro: 'Success!',
+                    message: 'Your password has been changed'
+                }
+            }
             return res.json(response)
         })
     },
@@ -142,8 +157,10 @@ const UserController = {
         //user nhap email va sdt -> check
         const email = req.body.email
         const phoneNumber = req.body.phoneNumber
+        const newPass = req.body.pass
+        const confirmPass = req.body.confirmPass
 
-        const responseMsg = await changePassword.forgetPassword(email, phoneNumber)
+        const responseMsg = await changePassword.forgetPassword(email, phoneNumber, newPass, confirmPass)
         if(responseMsg.code === 0){
             console.log('redirect trang reset pass')
             //return res.redirect('http://localhost:3000/users/reset_password')

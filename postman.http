@@ -3,7 +3,7 @@ content-type: application/json
 
 {
     "username" : "8584950818",
-    "password" : "xinchao123"
+    "password" : "helloworld123"
 }
 
 ###
@@ -38,12 +38,5 @@ GET http://localhost:3000/users/userInfo
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNzRhYmEzZGQ5ZWUwZDgzMGNkY2JkNCIsImFjY19zdGF0dXMiOjEsImlhdCI6MTY1MjAxOTUzMiwiZXhwIjoxNjUyMDIzMTMyfQ.1JWvxToCKLqxEMmayb-Eg5FSiBYOpcSkOvscA8guYq4
 
 ###
-POST http://localhost:3000/users/forgetPassword
-content-type: application/json
-
-{
-    "email": "thetannguyen193@gmail.com",
-    "phoneNumber" : "0123456789"
-}
 
 ###

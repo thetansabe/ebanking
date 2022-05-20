@@ -14,6 +14,16 @@
 <body>
     
     <div class="body">
+        {{#if flash}}
+            <div class="alert alert-dismissible alert-{{flash.type}} flash_style">
+                <strong>{{flash.intro}}</strong> {{{flash.message}}}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {{/if}}
+
+
         <div class="my_container bg-white">
             <div class="header_navbar">
                 <div class="header_navbar-logo">
@@ -49,7 +59,8 @@
                     </div>
                 </div>
             </div>
-    
+
+        
             <div class="content">
                 <div class="left_navbar">
                     
@@ -79,7 +90,8 @@
                     </div>
                     
                 </div>
-    
+
+                
                 {{{body}}}
             </div>
         </div>

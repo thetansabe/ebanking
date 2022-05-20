@@ -81,9 +81,9 @@ async function saveNewPassToDb(user, newPass, confirmNewPass){
 }
 
 
-async function forgetPassword(email , phoneNumber){
-    console.log(email)
-    console.log(phoneNumber)
+async function forgetPassword(email , phoneNumber, newPass, confirmNewPass){
+    // console.log(email)
+    // console.log(phoneNumber)
     //check if exists
     try{
         const doc = await Account.findOne({email: email, phonenumber : phoneNumber})
@@ -96,8 +96,13 @@ async function forgetPassword(email , phoneNumber){
             },process.env.SECRET_JWT_PIN, {expiresIn: '1m'} )
             //mailing -> mailing()
             mailing(email, PIN)
+
+            //save new pass
+            const saveNewPass = await saveNewPassToDb(doc, newPass, confirmNewPass)
+            if(saveNewPass.code === 0)
+                return { code: 0, msg: 'Send PIN through email and Update pass successfully' }
             //console.log('PIN from email: ', 'http://localhost:3000/users/reset_password/' + PIN)
-            return { code: 0, msg: 'Send PIN through email successfully' }
+            
         }   
     }
     catch(err){
@@ -110,8 +115,8 @@ function mailing(receiverMail, PIN){
     let transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-            user: "dummymailforebanking@gmail.com",
-            pass: "thisisadumbmail234"
+            user: process.env.EMAIL_FOR_SEND_NAME,
+            pass: process.env.EMAIL_FOR_SEND_PASS
         },
         tls:{
             rejectUnauthorized: false,
@@ -119,12 +124,11 @@ function mailing(receiverMail, PIN){
     })
 
     let mailOptions = {
-        from: "dummymailforebanking@gmail.com",
+        from: process.env.EMAIL_FOR_SEND_NAME,
         to: receiverMail,
         subject: "HiFi Ebanking reset password",
-        text: ` This is your verify link: \n
-            http://localhost:3000/users/reset_password/${PIN} \n 
-            This link is only activated in 1 minutes`
+        text: ` This is your verify link - This link is only active in 1 minute: \n
+            http://localhost:3000/users/reset_password/${PIN} \n `
     }
 
     transporter.sendMail(mailOptions, (err) => {

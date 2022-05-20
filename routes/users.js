@@ -42,6 +42,6 @@ router.put("/updateIdentityCard", middlewareController.authForUnauthUser, UserCo
 router.post("/forgetPassword", userController.forgetPassword)
 
 router.get("/reset_password/:PIN", middlewareController.verifyForResetPassword, (req, res) => {
-  //return res.redirect(303, 'http://localhost:3000/users/changePassword/firstLogin')
-  res.send('redirect sang trang first login')
+  return res.redirect(303, '/login')
+  //res.send('redirect sang trang first login')
 })
