@@ -1,11 +1,12 @@
 const mongoose = require('mongoose')
+const dotenv = require('dotenv').config({path: './.env'})
 
 const opts = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 }
 
-mongoose.connect('mongodb://localhost:27017/ebanking', opts)
+mongoose.connect(process.env.DATABASE_CONNECT_LINK, opts)
 
 const userSchema = new mongoose.Schema({
     username : String,
