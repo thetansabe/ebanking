@@ -1,13 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const opts = {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-}
-
-mongoose.connect('mongodb://localhost:27017/ebanking', opts)
-
 const TransferHistorySchema = new Schema({
     actor: {
         type: Schema.Types.ObjectId,
@@ -38,7 +31,7 @@ const TransferHistorySchema = new Schema({
         required: true
     },
     // 0 - pending
-    // 1 - full fill,
+    // 1 - fulfilled,
     // -1 - reject
     status: {
         type: String
@@ -55,6 +48,10 @@ const TransferHistorySchema = new Schema({
     creditCardNumber: {
         type: Schema.Types.ObjectId,
         ref: 'CreditCard'
+    },
+    isActor: {
+        type: Schema.Types.Boolean,
+        default: true
     }
 }, {
     timestamps: true,

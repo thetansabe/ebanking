@@ -18,14 +18,14 @@ async function userRegister(fields, files, secondLevelFolder){
     const isExisted = checkEmailExistence(email)
     const finalObj = 
         await isExisted.then(result => {
-            if(result) return {code: 104, msg: 'Email da ton tai'}
+            if(result) return {code: 104, msg: 'Email đã tồn tại'}
 
             //handle saving
             saveInfoToDb(phoneNumber, email, hoTen, dateBirth, cmndTruoc, cmndSau, secondLevelFolder)
             
         })
     .then(finalMsg => {
-        if(!finalMsg) return {code: 0, msg: 'Register thanh cong'}
+        if(!finalMsg) return {code: 0, msg: 'Đăng ký tài khoản thành công'}
         return finalMsg
     })
     

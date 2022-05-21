@@ -34,7 +34,6 @@ const UserController = {
                     secure: false, //set true khi deloy web
                     path: "/",
                     sameSite: "strict",
-        
                 })
 
                 return res.json(others)
@@ -155,6 +154,7 @@ const UserController = {
     //     const responseMsg = await changePassword.resetPassword(PIN)
     //     return res.json(responseMsg)
     // }
+
 }
 
 module.exports = UserController

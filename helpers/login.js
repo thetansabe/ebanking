@@ -26,20 +26,24 @@ async function userLogin(username, password){
 
 async function validateAccount(username, password){
     try{
-        
-        const doc = await Account.findOne({username: username})
+        const filter = {
+            username: username,
+        }
+        const doc = await Account.findOne(filter)
 
         const cmp = bcrypt.compareSync(password, doc.password)
-
-        if(!cmp) return {code: 101, msg: 'Sai mat khau'}
-
-        //xu li JWT
-        const accessToken = generateAccessToken(doc._id, doc.acc_status)
-        const refreshToken = generateRefreshToken(doc._id, doc.acc_status)
         
-        //luu cookie
-        
-        return {code: 0, msg: 'Dang nhap thanh cong', accessToken, refreshToken, status_for_direct: doc.acc_status}
+        if(!cmp) {
+            return {code: 101, msg: 'Sai mat khau'}
+        }
+        else {
+            //xu li JWT
+            const accessToken = generateAccessToken(doc._id, doc.acc_status)
+            const refreshToken = generateRefreshToken(doc._id, doc.acc_status)
+            
+            //luu cookie
+            return {code: 0, msg: 'Dang nhap thanh cong', accessToken, refreshToken, status_for_direct: doc.acc_status}
+        }
     }
     catch (err){
         return {code: 100, msg: 'Tai khoan khong ton tai'}

@@ -1,12 +1,5 @@
 const mongoose = require('mongoose')
 
-const opts = {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-}
-
-mongoose.connect('mongodb://localhost:27017/ebanking', opts)
-
 const userSchema = new mongoose.Schema({
     username : String,
     password : String,
@@ -17,7 +10,15 @@ const userSchema = new mongoose.Schema({
     email: String,
     birth: Date,
     id_front: String,
-    id_back: String
+    id_back: String,
+    wrongPassCount: {
+        type: Number,
+        default: 0
+    },
+    irRegularLogin: {
+        type: Number,
+        default: 0
+    }
 },{
     timestamps: true,
 })

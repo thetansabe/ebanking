@@ -1,26 +1,30 @@
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const Account = require('../model/Account')
+const OTP = require('../model/OTP')
+const createRandomOTP = require('./createRandomOTP')
 
 function mailing(receiverMail, PIN){
   let transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.email,
-        pass: process.env.password
-      },
-      tls:{
-          rejectUnauthorized: false,
-      }
+    host: 'mail.phongdaotao.com',
+    port: '25',
+    secure: false,
+    auth: {
+      user: process.env.email, //sinhvien@phongdaotao.com
+      pass: process.env.password //svtdtu
+    },
+    tls:{
+      rejectUnauthorized: false,
+    }
   })
 
   let mailOptions = {
     from: process.env.email,
     to: receiverMail,
     subject: "HiFi Ebanking transfer money",
-    text: ` This is your verify link: \n
-      http://localhost:3000/wallet/transfer/${PIN} \n 
-      This link is only activated in 1 minutes`
+    text: ` This is your OTP code: \n
+      ${PIN} \n 
+      This code is only activated in 1 minutes`
   }
 
   transporter.sendMail(mailOptions, (err) => {
@@ -37,13 +41,21 @@ async function transfer(transferData){
       // if(!doc) return {code: 114, msg: 'Invalid email or phone number, please try again'}
       // else{
           //create PIN
-          const PIN = jwt.sign({
+          const test = jwt.sign({
             data: transferData,
           },process.env.SECRET_JWT_PIN, {expiresIn: '1m'} )
-          //mailing -> mailing()
-          mailing(transferData.email, PIN)
-          //console.log('PIN from email: ', 'http://localhost:3000/users/reset_password/' + PIN)
-          return { code: 0, msg: 'Send PIN through email successfully' }
+          const otpCode = createRandomOTP(6)
+          console.log(otpCode)
+          const otp = new OTP({
+            code: otpCode,
+            actor: transferData.actorId,
+          })
+          await otp.save()
+          .then(savedOtp => {
+            //mailing -> mailing()
+            mailing(transferData.email, savedOtp.code)
+            return { code: 0, msg: 'Send PIN through email successfully', data: savedOtp.code }
+          })
       // }   
   }
   catch(err){

@@ -7,7 +7,7 @@ const middlewareController = require('../controller/MiddlewareController')
 
 router.post('/recharge', rechargeValidator, walletController.recharge);
 router.post('/transfer', transferValidator, walletController.transfer);
-router.get('/transfer/:PIN', middlewareController.verifyForTransfer, walletController.something)
+router.get('/transfer/:PIN', middlewareController.verifyForTransfer, walletController.checkPin)
 router.post('/add', walletController.add);
 router.post('/addOTP', walletController.createOTP)
 module.exports = router;
