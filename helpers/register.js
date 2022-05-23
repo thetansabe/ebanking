@@ -3,6 +3,7 @@ const path = require('path')
 const nodemailer = require('nodemailer')
 const Account = require('../model/Account')
 const bcrypt = require('bcrypt')
+const dotenv = require('dotenv').config({path: './.env'})
 
 async function userRegister(fields, files, secondLevelFolder){
 
@@ -10,7 +11,7 @@ async function userRegister(fields, files, secondLevelFolder){
     const email = fields.email[0]
     const hoTen = fields.hoten[0]
     const dateBirth = fields.dateBirth[0]
-
+    const address = fields.address[0]
     const cmndTruoc = files.cmndTruoc[0]
     const cmndSau = files.cmndSau[0]
 
@@ -21,7 +22,7 @@ async function userRegister(fields, files, secondLevelFolder){
             if(result) return {code: 104, msg: 'Email da ton tai'}
 
             //handle saving
-            saveInfoToDb(phoneNumber, email, hoTen, dateBirth, cmndTruoc, cmndSau, secondLevelFolder)
+            saveInfoToDb(phoneNumber, email, hoTen, dateBirth, address, cmndTruoc, cmndSau, secondLevelFolder)
             
         })
     .then(finalMsg => {
@@ -32,7 +33,7 @@ async function userRegister(fields, files, secondLevelFolder){
     return finalObj
 }
 
-function saveInfoToDb(phoneNumber, email, hoTen, dateBirth, cmndTruoc, cmndSau, secondLevelFolder){
+function saveInfoToDb(phoneNumber, email, hoTen, dateBirth, address, cmndTruoc, cmndSau, secondLevelFolder){
     ////move file
     const id_front = moveFile(cmndTruoc, secondLevelFolder, email)
     const id_back = moveFile(cmndSau, secondLevelFolder, email)
@@ -55,6 +56,7 @@ function saveInfoToDb(phoneNumber, email, hoTen, dateBirth, cmndTruoc, cmndSau, 
         hoten: hoTen,
         email,
         birth: dateBirth,
+        address,
         id_front,
         id_back
     })
@@ -119,10 +121,12 @@ function moveFile(file, secondLevelFolder, destFolder){
 
 function mailing(receiverMail, username, pass){
     let transporter = nodemailer.createTransport({
-        service: "gmail",
+        host: process.env.EMAIL_FOR_SEND_HOST,
+        port: '25',
+        secure: false,
         auth: {
-            user: "dummymailforebanking@gmail.com",
-            pass: "thisisadumbmail234"
+            user: process.env.EMAIL_FOR_SEND_NAME,
+            pass: process.env.EMAIL_FOR_SEND_PASS
         },
         tls:{
             rejectUnauthorized: false,
@@ -130,7 +134,7 @@ function mailing(receiverMail, username, pass){
     })
 
     let mailOptions = {
-        from: "dummymailforebanking@gmail.com",
+        from: process.env.EMAIL_FOR_SEND_NAME,
         to: receiverMail,
         subject: "HiFi Ebanking default account",
         text: ` This is your username: \b${username}\n This is your pass: \b${pass}\n`

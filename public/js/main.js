@@ -681,27 +681,90 @@ if(login){
 const forget_pass = document.querySelector('.login_content.forget_pass')
 if(forget_pass){
 
+  function validateForgetPass(email, phoneNumber, pass, confirmPass){
+    let errors = []
+    
+    if(!email){
+      errors.push({type: 1, msg: 'Missing email'})
+    }
+    else if(!validateEmail(email))
+      errors.push({type: 1, msg: 'Invalid email type'})
+
+    if(!phoneNumber){
+      errors.push({type: 2, msg: 'Missing phone number'})
+    }
+    else if(phoneNumber.length < 10)
+      errors.push({type: 2, msg: 'Phone number must be at least 10 digits'})
+
+    if(!pass){
+      errors.push({type: 3, msg: 'Missing password'})
+    }
+    else if(pass.length < 6)
+      errors.push({type: 3, msg: 'Password must be at least 6 char'})
+
+    if(!confirmPass){
+      errors.push({type: 4, msg: 'Missing confirm password'})
+    }
+    else if(confirmPass !== pass)
+      errors.push({type: 4, msg: 'Confirm password must be identical to password'})
+
+    return errors
+  }
+
   function handleForgetPass(){
 
-    const email = document.querySelector('#forget_pass-email').value
-    const phoneNumber = document.querySelector('#forget_pass-phone_num').value
-    const pass = document.querySelector('#forget_pass-new_pass').value
-    const confirmPass = document.querySelector('#forget_pass-reenter_pass').value
+    const email = document.querySelector('#forget_pass-email')
+    const phoneNumber = document.querySelector('#forget_pass-phone_num')
+    const pass = document.querySelector('#forget_pass-new_pass')
+    const confirmPass = document.querySelector('#forget_pass-reenter_pass')
+    const lastSpan = forget_pass.querySelector('.login_box-msg.last')
 
+    lastSpan.innerText = ''
+    email.parentElement.querySelector('.login_box-msg').innerText = ''
+    phoneNumber.parentElement.querySelector('.login_box-msg').innerText = ''
+    pass.parentElement.querySelector('.login_box-msg').innerText = ''
+    confirmPass.parentElement.querySelector('.login_box-msg').innerText = ''
+    
     //console.log(email, phoneNumber, pass, confirmPass)
+    const errors = validateForgetPass(email.value, phoneNumber.value, pass.value, confirmPass.value)
 
+    if(errors.length > 0){
+      errors.forEach(err => {
+        if(err.type === 1)
+          email.parentElement.querySelector('.login_box-msg').innerText = err.msg
+        if(err.type === 2)
+         phoneNumber.parentElement.querySelector('.login_box-msg').innerText = err.msg
+        if(err.type === 3)
+          pass.parentElement.querySelector('.login_box-msg').innerText = err.msg
+        if(err.type === 4)
+          confirmPass.parentElement.querySelector('.login_box-msg').innerText = err.msg
 
-    ////validate xong roi moi cho phep fetch
-    fetch('users/forgetPassword', {
-      method: 'post',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({email, phoneNumber, pass, confirmPass})
-    })
-    .then(res => res.json())
-    .then(data => {
-      //data.code !== 0 => render loi ra day
-      console.log(data)
-    })
+      })
+    }else{
+      ////validate xong roi moi cho phep fetch
+      fetch('users/forgetPassword', {
+        method: 'post',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          email: email.value, 
+          phoneNumber: phoneNumber.value, 
+          pass: pass.value, 
+          confirmPass: confirmPass.value
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        //data.code !== 0 => render loi ra day
+        if(data.code !== 0){
+          lastSpan.innerText = data.msg
+        }else{
+          lastSpan.style.color = 'green'
+          lastSpan.innerText = data.msg
+        }
+      })
+    }
+
+    
   }
 }
 
@@ -709,36 +772,83 @@ if(forget_pass){
 /////////////CHANGE PASS
 const change_pass = document.querySelector('.change_pass')
 if(change_pass){
+  function validateChangePass(old, newPass, confirm){
+    let errors = []
+
+    if(!old){
+      errors.push({type: 1, msg: 'Missing old password'})
+    }
+    else if(old.length < 6){
+      errors.push({type: 1, msg: 'Password must be at least 6 char'})
+    }
+
+    if(!newPass){
+      errors.push({type: 2, msg: 'Missing new pass password'})
+    }
+    else if(newPass.length < 6){
+      errors.push({type: 2, msg: 'New password must be at least 6 char'})
+    }
+
+    if(!confirm){
+      errors.push({type: 3, msg: 'Missing confirm password'})
+    }
+    else if(confirm !== newPass){
+      errors.push({type: 3, msg: 'Confirm password must be indentical new password'})
+    }
+
+    return errors
+  }
+
   function handleChangePass(){
-    const oldPassword = document.querySelector('#change_pass-old_pass').value
-    const newPassword = document.querySelector('#change_pass-new_pass').value
-    const confirmPassword = document.querySelector('#change_pass-reenter_pass').value
+    const oldPassword = document.querySelector('#change_pass-old_pass')
+    const newPassword = document.querySelector('#change_pass-new_pass')
+    const confirmPassword = document.querySelector('#change_pass-reenter_pass')
     const authToken = `Bearer ${localStorage.getItem('accessToken')}`
-    
-    //console.log(oldPassword, newPassword, confirmPassword)
-    //////validate
+    const lastMsg = change_pass.querySelector('.login_box-msg.last')
 
-    //console.log('accessToken', localStorage.getItem('accessToken'))
+    oldPassword.parentElement.querySelector('.login_box-msg').innerText = ''
+    newPassword.parentElement.querySelector('.login_box-msg').innerText = ''
+    confirmPassword.parentElement.querySelector('.login_box-msg').innerText = ''
+    lastMsg.innerText = ''
 
-    //////validate thanh cong thi moi duoc fetch
-    fetch('/users/changePassword', {
-      method: 'put',
-      headers: {
-        'Authorization' : authToken,
-        'Content-Type' : 'application/json'
-      },
-      body: JSON.stringify({
-        oldPassword, newPassword, confirmPassword
+    const errors = validateChangePass(oldPassword.value, newPassword.value, confirmPassword.value)
+
+    if(errors.length > 0){
+      errors.forEach(err => {
+        if(err.type === 1)
+          oldPassword.parentElement.querySelector('.login_box-msg').innerText = err.msg
+
+        if(err.type === 2)
+          newPassword.parentElement.querySelector('.login_box-msg').innerText = err.msg
+        
+        if(err.type === 3)
+          confirmPassword.parentElement.querySelector('.login_box-msg').innerText = err.msg   
       })
-    })
-    .then(res => res.json())
-    .then(data => {
-      console.log(data)
-      if(data.code === 0){
-        window.location.href = '/'
-      }
-      //else render loi data.msg ra giao dien
-    })
+    }else{
+      //////validate thanh cong thi moi duoc fetch
+      fetch('/users/changePassword', {
+        method: 'put',
+        headers: {
+          'Authorization' : authToken,
+          'Content-Type' : 'application/json'
+        },
+        body: JSON.stringify({
+          oldPassword: oldPassword.value, 
+          newPassword: newPassword.value, 
+          confirmPassword: confirmPassword.value
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data)
+        if(data.code === 0){
+          window.location.href = '/'
+        }else{
+          lastMsg.innerText = data.msg
+        }
+      })
+    }
+    
   }
 }
 
@@ -769,4 +879,108 @@ if(first_change){
       }
     })
   }
+}
+
+const validateEmail = (email) => {
+  return String(email)
+      .toLowerCase()
+      .match(
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      )
+}
+
+
+//REGISTER
+const register = document.querySelector('.login_content.register')
+if(register){
+
+  function validateRegister(fullName, email, dateBirth, address, frontId, backId, phoneNumber){
+    let errors = []
+
+    if(!fullName) errors.push({type: 1, msg: 'Missing full name'})
+
+    if(!email) errors.push({type: 2, msg: 'Missing email'})
+    else if(!validateEmail(email))
+      errors.push({type: 2, msg: 'Wrong email format'})
+
+    if(!address) errors.push({type: 3, msg: 'Missing address'})
+
+    if(!frontId) errors.push({type: 4, msg: 'Missing ID front image'})
+
+    if(!backId) errors.push({type: 5, msg: 'Missing id back image'})
+
+    if(!phoneNumber) errors.push({type: 6, msg: 'Missing phone number'})
+
+    if(!dateBirth) errors.push({type: 7, msg: 'Missing date of birth'})
+    else{
+      const myDate = new Date(dateBirth)
+      const today = new Date()
+      
+      if(myDate > today)
+        errors.push({type: 7, msg: 'Invalid date'})
+      else if(today.getFullYear() - myDate.getFullYear() < 18)
+        errors.push({type: 7, msg: 'Must be at least 18 years old'})
+    }
+    return errors
+  }
+
+  register.addEventListener('submit', e => {
+    e.preventDefault()
+    const fullName = register.querySelector('#register_box-name')
+    const email = register.querySelector('#register_box-email')
+    const dateBirth = register.querySelector('#register_box-date_birth')
+    const address = register.querySelector('#register_box-address')
+    const frontId = register.querySelector('#register_box-id_front')
+    const backId = register.querySelector('#register_box-id_back')
+    const phoneNumber = register.querySelector('#register_box-phone')
+
+    const lastMsg = register.querySelector('.login_box-msg.last')
+
+    lastMsg.innerHTML = ''
+    fullName.parentElement.querySelector('.login_box-msg').innerText = ''
+    email.parentElement.querySelector('.login_box-msg').innerText = ''
+    dateBirth.parentElement.querySelector('.login_box-msg').innerText = ''
+    address.parentElement.querySelector('.login_box-msg').innerText = ''
+    frontId.parentElement.querySelector('.login_box-msg').innerText = ''
+    backId.parentElement.querySelector('.login_box-msg').innerText = ''
+    phoneNumber.parentElement.querySelector('.login_box-msg').innerText = ''
+    
+    const errors = 
+      validateRegister(fullName.value, email.value, dateBirth.value, address.value, frontId.value, backId.value, phoneNumber.value)
+    
+    if(errors.length > 0){
+      errors.forEach(err => {
+        if(err.type === 1)
+          fullName.parentElement.querySelector('.login_box-msg').innerText = err.msg
+        if(err.type === 2)
+          email.parentElement.querySelector('.login_box-msg').innerText = err.msg
+        if(err.type === 3)
+          address.parentElement.querySelector('.login_box-msg').innerText = err.msg
+        if(err.type === 4)
+          frontId.parentElement.querySelector('.login_box-msg').innerText = err.msg
+        if(err.type === 5)
+          backId.parentElement.querySelector('.login_box-msg').innerText = err.msg
+        if(err.type === 6)
+          phoneNumber.parentElement.querySelector('.login_box-msg').innerText = err.msg
+        if(err.type === 7)
+          dateBirth.parentElement.querySelector('.login_box-msg').innerText = err.msg
+      })
+    }else{
+      const body = new FormData(e.target)
+
+      fetch('/users/register', {
+        method: 'post',
+        body,
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.code !== 0){
+          lastMsg.innerHTML = data.msg
+        }else{
+          window.location.href = '/login'
+        }
+      })
+    }
+    
+  })
 }

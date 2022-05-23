@@ -15,9 +15,18 @@ const UserController = {
         const form = new multiparty.Form()
 
         form.parse(req, (err, fields, files) => {
+            // console.log(fields)
+            // console.log(files)
             if (err) return res.status(400).send('unknown error when register')
             const resultMsg = register.userRegister( fields, files, 'cmnd')
-            resultMsg.then(result => { return res.json(result) })
+            resultMsg.then(result => { 
+                req.session.flash = {
+                    type: 'success',
+                    intro: 'Register success',
+                    message: 'Check your register email to login with default account'
+                }
+                return res.json(result) 
+            })
         })
     },
 

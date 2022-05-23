@@ -18,8 +18,15 @@ const middelwareController =
             // console.log('err: ',err)
             // console.log('user: ',user)
             //wrong token -> forbidden code
-            if(err) 
+            if(err){
+                req.session.flash = {
+                    type: 'danger',
+                    intro: 'Unauthorized!',
+                    message: 'You dont have permission to access this api'
+                }
                 return res.redirect(303, '/login')
+            }
+                
                 //return res.status(403).json('Token is not valid, you are forbidden to access this api')
             //user la object (ta doc hieu duoc)
             //chua thong tin trong jwt
@@ -77,8 +84,14 @@ const middelwareController =
         
         jwt.verify(refreshToken, process.env.SECRET_JWT_REFRESH_KEY, (err, user) => {
             //check token ngau nhien
-            if(err) 
+            if(err){
+                req.session.flash = {
+                    type: 'danger',
+                    intro: 'Unauthorized!',
+                    message: 'Failed to access, wrong account perhaps'
+                }
                 return res.redirect(303, '/login')
+            }   
             
             next()
         })          

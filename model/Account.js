@@ -17,6 +17,7 @@ const userSchema = new mongoose.Schema({
     hoten: String,
     email: String,
     birth: Date,
+    address: String,
     id_front: String,
     id_back: String
 },{
