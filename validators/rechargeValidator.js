@@ -16,6 +16,10 @@ module.exports = [
     .notEmpty().withMessage('Không được để trống mã cvv')
     .isLength({min: 3, max: 3}).withMessage('Sai định dạng, mã cvv bao gồm 3 chữ số'),
 
+    check('actor')
+    .exists().withMessage('Vui lòng cung cấp access token')
+    .notEmpty().withMessage('Không được để trống access token'),
+
     check('money')
     .exists().withMessage('Vui lòng cung cấp số tiền cần nạp')
     .notEmpty().withMessage('Số tiền cần nạp không được để trống')

@@ -10,6 +10,7 @@ router.get('/activated', siteController.activated);
 router.get('/deactivated', siteController.deactivated);
 router.get('/waiting', siteController.waiting);
 router.get('/ban', siteController.ban);
+router.get('/search/:id', siteController.getAccount)
 router.get('/', siteController.index);
 
 module.exports = router;

@@ -4,6 +4,94 @@ const TransferHistory = require('../model/TransferHistory')
 const walletController = require('./WalletController')
 
 const AdminController = {
+    async requireCertificate(req, res, next) {
+        const id = req.params.id;
+        const filter = {
+            _id: id,
+        }
+
+        const update = {
+            acc_status: 1,
+            acc_info: 'unauthorized'
+        }
+        await Account.findOneAndUpdate(filter, update, {
+            new: true
+        })
+        .then(doc => {
+            res.status(200).json({
+                code: 0,
+                message: 'Admin yêu cầu bỏ sung chứng minh nhân dân cho tài khoản thành công',
+                data: doc
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                code: 1,
+                message: 'Admin yêu cầu bổ sung chứng minh nhân dân cho tài khoản thất bại',
+                err: err.message
+            })
+        })
+    },
+
+    async deactivateAccount(req, res, next) {
+        const id = req.params.id;
+        const filter = {
+            _id: id,
+        }
+
+        const update = {
+            acc_status: -1,
+            acc_info: 'inactivated'
+        }
+        await Account.findOneAndUpdate(filter, update, {
+            new: true
+        })
+        .then(doc => {
+            res.status(200).json({
+                code: 0,
+                message: 'Admin hủy xác minh tài khoản thành công',
+                data: doc
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                code: 1,
+                message: 'Admin hủy xác minh tài khoản thất bại',
+                err: err.message
+            })
+        })
+    },
+    
+    async activateAccount(req, res, next) {
+        const id = req.params.id;
+        const filter = {
+            _id: id,
+        }
+
+        const update = {
+            acc_status: 2,
+            acc_info: 'authorized'
+        }
+
+        await Account.findOneAndUpdate(filter, update, {
+            new: true
+        })
+        .then(doc => {
+            res.status(200).json({
+                code: 0,
+                message: 'Admin xác minh tài khoản thành công',
+                data: doc
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                code: 1,
+                message: 'Admin xác minh tài khoản thất bại',
+                err: err.message
+            })
+        })
+    },
+
     //DESC pending accounts
     async pendingAccounts(req, res, next) {
         Account.find({acc_status: 1}).sort({

@@ -23,4 +23,8 @@ module.exports = [
     .exists().withMessage('Vui lòng cung cấp số tiền cần nạp')
     .notEmpty().withMessage('Số tiền cần nạp không được để trống')
     .isNumeric().withMessage('Số tiền cần nạp phải là kiểu số'),
+    
+    check('actor')
+    .exists().withMessage('Vui lòng cung cấp access token')
+    .notEmpty().withMessage('Không được để trống access token'),
 ]
