@@ -428,6 +428,21 @@
     
 }
 
+.profile_update-id_wrapper{
+  border: 3px solid #ECE9EC;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.profile_date_birth-span{
+  color: #51B4DD;
+  cursor: pointer;
+}
+
+.profile_holder-wrapper{
+  display: flex;
+}
+
 .input_form{
     margin-bottom: 10px;
     
@@ -445,6 +460,7 @@
     /* margin-bottom: 10px; */
     justify-content: space-between;
     width: 100%;
+    
 }
 
 .input_form-holder.input-disable{
@@ -462,8 +478,15 @@
 
 .input_form-icon_submit{
     z-index: 100;
-    margin-top: 4px;
+    margin-top: 8px;
     cursor: pointer;
+    color: #51B4DD;
+}
+
+.input_form.change_pass{
+  border: 3px solid #ECE9EC;
+  border-radius: 12px;
+  padding: 12px;  
 }
 
 /* Tranfer */

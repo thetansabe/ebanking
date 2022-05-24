@@ -14,9 +14,31 @@ function navigateHighLight(){
 
 }
 
+function userInfoLayout(){
+  const userName = document.querySelector('.header_navbar-user_name')
+  const userId = document.querySelector('.header_navbar-user_id.span')
+
+  const authToken = `Bearer ${localStorage.getItem('accessToken')}`
+  fetch('/users/userInfo', {
+    method: 'get',
+    headers: {
+      'Authorization' : authToken,
+      'Content-Type' : 'application/json'
+    },
+    redirect: 'follow',
+  })
+  .then(res => res.json())
+  .then(data => {
+    userName.innerText = data.hoten
+    userId.innerText = data.username
+  })
+}
+
 const layout = document.querySelector('.my_container')
 if(layout){
   navigateHighLight()
+
+  userInfoLayout()
 
   function handleSignOut(){
     console.log('aloo')
@@ -214,10 +236,105 @@ if(dashboard){
 /////////////////////////PROFILE
 const profile = document.querySelector('.account_content')
 if(profile){
-    function handleUpdateInfo(icon){
-        console.log(icon.parentElement.innerText)
-        //return icon.parentElement.innerText
-    }   
+    const authToken = `Bearer ${localStorage.getItem('accessToken')}`
+    //render update ID form
+    const leftHalf = profile.querySelector('.left-half')
+
+    const form = document.createElement('form')
+    form.classList.add('profile_update-id_wrapper')
+    form.setAttribute('enctype', 'multipart/form-data')
+    form.setAttribute('action', '/users/updateIdentityCard')
+    form.setAttribute('method', 'post')
+
+    const content = `
+      <div class="input_form">
+          <p class="input_form-title front_id">Front ID image: </p>
+          <input type="file" name = "id_front" class="input_form-holder front_id" accept="image/*">
+      </div>
+
+
+      <div class="input_form">
+          <p class="input_form-title">Back ID image: </p>
+          <input type="file" name="id_back" class="input_form-holder back_id " accept="image/*">
+      </div>
+
+      
+      <div class="input_form">
+          <p class="input_form-title submission">Update ID images: </p>
+          <span class="update_id-span"></span>
+          <button type = "submit" class="btn btn-primary input_form-pass_btn">Update</button>
+      </div>
+    `
+
+    form.innerHTML = content;
+
+    function renderUserInfo(){
+      const username = document.querySelector('.input_form-holder.username')
+      const email = document.querySelector('.input_form-holder.email')
+      const address = document.querySelector('.input_form-holder.address')
+      const fullName = document.querySelector('.input_form-holder.full_name')
+      const contact = document.querySelector('.input_form-holder.phone_number')
+      const dateBirth = document.querySelector('.input_form-holder.date_birth')
+      const status = document.querySelector('.input_form-holder.status')
+
+      
+      fetch('/users/userInfo', {
+        method: 'get',
+        headers: {
+          'Authorization' : authToken,
+          'Content-Type' : 'application/json'
+        },
+        redirect: 'follow',
+      })
+      .then(res => res.json())
+      .then(data => {
+        let birth = new Date(data.birth)
+        birth = birth.getFullYear() + '-'  + (birth.getMonth() + 1) + '-' + birth.getDate() 
+        //console.log(data)
+        //console.log(birth)
+        username.innerText = data.username
+        email.innerText = data.email
+        address.innerText = data.address
+        fullName.innerText = data.hoten
+        contact.innerText = data.phonenumber
+        dateBirth.innerText = birth
+        status.innerText = data.acc_info
+
+        if(data.acc_status === 3){
+          leftHalf.appendChild(form)
+          updateIdImage()
+        }
+      })
+      .catch(err => {
+        //loi vi token het han -> ban ra login
+        window.location.href = '/login'
+      })
+    }
+
+    renderUserInfo() 
+
+
+    //update ID image
+    function updateIdImage(){
+      form.addEventListener('submit', e => {
+        e.preventDefault()
+  
+        const body = new FormData(e.target)
+  
+        fetch('/users/updateIdentityCard', {
+          method: 'put',
+          headers: {
+            'Authorization' : authToken,
+          },
+          body
+        })
+        .then(res => res.json())
+        .then(data => {
+          location.reload()
+        })
+      })
+    }
+    
 }
 
 ////////////////////////TRANSFER
@@ -984,3 +1101,5 @@ if(register){
     
   })
 }
+
+

@@ -155,8 +155,23 @@ const UserController = {
         const form = new multiparty.Form()
 
         form.parse(req, async (err, fields, files) => {
+            //console.log(files)
             if (err) return res.status(400).send('unknown error when catch multi form data')
             const updateReturnMsg = await userInfo.updateIdentity(files, req.user.id)
+            if(updateReturnMsg.code === 0){
+                req.session.flash = {
+                    type: 'success',
+                    intro: 'Update successfully',
+                    message: 'New ID images updated, wait for admin authorization'
+                }
+            }
+            else{
+                req.session.flash = {
+                    type: 'danger',
+                    intro: 'Update failed',
+                    message: updateReturnMsg.msg
+                }
+            }
             return res.json(updateReturnMsg)
         })
           

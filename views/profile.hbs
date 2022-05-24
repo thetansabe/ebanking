@@ -10,69 +10,98 @@
                     </div>
 
                     <div class="row profile_wrapper" action="" method="post" >
-                        <div class="col-md-6">
+                        <div class="col-md-6 left-half">
                             <div class="input_form">
                                 <p class="input_form-title">Username: </p>
-                                <div class="input_form-holder input-disable">#234325431</div>
+                                <div class="input_form-holder username input-disable"></div>
                             </div>
 
                             <div class="input_form">
-                                <p class="input_form-title">Email: </p>
-                                <div class="input_form-holder" contenteditable="true">abc@gmail.com
+                                <p class="input_form-title">Trang thai: </p>
+                                <div class="input_form-holder status"></div>
+                            </div>
+
+                           <div class="input_form">
+                                <p class="input_form-title">Ngay sinh: </p>
+
+                                <div class="profile_holder-wrapper">
+                                    <div class="input_form-holder date_birth"></div>
                                     
-                                    <i class="fas fa-upload input_form-icon_submit" onclick="handleUpdateInfo(this)"></i>
                                 </div>
                             </div>
 
-                            <div class="input_form">
-                                <p class="input_form-title">Address: </p>
-                                <div class="input_form-holder" contenteditable="true">123 Ly Tu Trong, Nha Trang, Khanh Hoa
-                                    <i class="fas fa-upload input_form-icon_submit" onclick="handleUpdateInfo(this)"></i>
+                            {{!-- <form
+                                method="put"
+                                action="/users/updateIdentityCard"
+                                enctype="multipart/form-data" 
+                                class="profile_update-id_wrapper"
+                            >
+                                <div class="input_form">
+                                    <p class="input_form-title front_id">Front ID image: </p>
+                                    <input type="file" name = "id_front" class="input_form-holder front_id" accept="image/*">
                                 </div>
-                            </div>
 
-                            <div class="input_form">
-                                <p class="input_form-title">Front ID image: </p>
-                                <input type="file" class="input_form-holder">
-                            </div>
-                        
-                            <!-- change pass btn -->
-                            <div class="input_form">
-                                <p class="input_form-title">Change pass: </p>
-                                <a href="/change_pass" type="button" class="btn btn-outline-warning input_form-pass_btn">Change password</a>
-                            </div>
+
+                                <div class="input_form">
+                                    <p class="input_form-title">Back ID image: </p>
+                                    <input type="file" name="id_back" class="input_form-holder back_id " accept="image/*">
+                                </div>
+
+                                
+                                <div class="input_form">
+                                    <p class="input_form-title submission">Update ID images: </p>
+                                    <span class="update_id-span"></span>
+                                    <button type = "submit" class="btn btn-primary input_form-pass_btn">Update</button>
+                                </div>
+                            </form> --}}
+                            
                         </div>
 
                         <div class="col-md-6">
                             <div class="input_form">
                                 <p class="input_form-title">Ho va ten: </p>
-                                <div class="input_form-holder" contenteditable="true">Nguyen Van A
-                                    <i class="fas fa-upload input_form-icon_submit" onclick="handleUpdateInfo(this)"></i>
+                                <div class="profile_holder-wrapper">
+                                    <div class="input_form-holder full_name"></div>
+                                    
+                                </div>
+                            </div>
+
+                             <div class="input_form">
+                                <p class="input_form-title">Email: </p>
+
+                                <div class="profile_holder-wrapper">
+                                    <div class="input_form-holder email"></div>
+                                    
+                                </div>
+                            </div>
+
+                            <div class="input_form">
+                                <p class="input_form-title">Address: </p>
+                                
+
+                                <div class="profile_holder-wrapper">
+                                    <div class="input_form-holder address"> </div>
+                                    
                                 </div>
                             </div>
 
                             <div class="input_form">
                                 <p class="input_form-title">Contact: </p>
-                                <div class="input_form-holder" contenteditable="true">123456789
-                                    <i class="fas fa-upload input_form-icon_submit" onclick="handleUpdateInfo(this)"></i>
+                                
+
+                                <div class="profile_holder-wrapper">
+                                    <div class="input_form-holder phone_number"></div>
+                                    
                                 </div>
                             </div>
-
-                            <div class="input_form">
-                                <p class="input_form-title">Ngay sinh: </p>
-                                <input type="date" class="input_form-holder">
-                            </div>
-
-                            <div class="input_form">
-                                <p class="input_form-title">Back ID image: </p>
-                                <input type="file" class="input_form-holder">
-                            </div>
-
                             
-                            <div class="input_form">
-                                <p class="input_form-title submission">Update ID images: </p>
-                                <button type = "submit" class="btn btn-primary input_form-pass_btn">Update</button>
+                            <!-- change pass btn -->
+
+                            <div class="input_form change_pass">
+                                <p class="input_form-title">Change pass: </p>
+                                <a href="/change_pass" type="button" class="btn btn-outline-warning input_form-pass_btn">Change password</a>
                             </div>
+                            
                         </div>
                     </div>
 

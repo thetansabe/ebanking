@@ -1,10 +1,11 @@
 var express = require('express');
 var router = express.Router();
+
 const middlewareController = require('../controller/MiddlewareController');
 
 /* GET home page. */
-router.get('/', middlewareController.renderUnAuth, function(req, res, next) {
-  res.render('dashboard');
+router.get('/', middlewareController.renderUnAuth, async function(req, res, next) {
+  return res.render('dashboard');
 });
 
 router.get('/profile', middlewareController.renderUnAuth, function(req, res, next) {
