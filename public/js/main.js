@@ -1252,7 +1252,7 @@ if (pendingPage) {
       userName.innerText = response.data.username ||'';
       email.innerText = response.data.email || '';
       address.innerText = response.data.address || '';
-      frontId.setAttribute('src', response.data.id_front || '')
+frontId.setAttribute('src', response.data.id_front || '')
       backId.setAttribute('src', response.data.id_back || '')
       name.innerText = response.data.hoten;
       phone.innerText = response.data.phonenumber;
@@ -1310,7 +1310,6 @@ if (activatedPage) {
     })
   }
 }
-
 const banPage = document.querySelector('#ban-content')
 if (banPage) {
   fetch('http://localhost:3000/admin/lock')
@@ -1369,7 +1368,7 @@ if (deactivatedPage) {
     if (response.code === 0) {
       const deactivatedAccountsList = document.querySelector('.deactivated_accounts-list')
       deactivatedAccountsList.innerHTML = ``
-      response.data.forEach((account) => {
+response.data.forEach((account) => {
         console.log(account)
         deactivatedAccountsList.innerHTML += `<div class="view-task border border-3 rounded">
                 <div class="task-detail p-2"> 
@@ -1410,4 +1409,3 @@ if (deactivatedPage) {
     })
   }
 }
-
