@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 const middlewareController = require('../controller/MiddlewareController');
+const siteController = require('../controller/SiteController');
 
 /* GET home page. */
 router.get('/', middlewareController.renderUnAuth, async function(req, res, next) {
@@ -23,6 +24,8 @@ router.get('/buy_cards', middlewareController.renderUnAuth, (req, res) => {
 router.get('/deposit_withdraw', middlewareController.renderUnAuth, (req, res) => {
   res.render('deposit_withdraw')
 })
+
+router.post('/search/:phone', siteController.search)
 
 
 ////

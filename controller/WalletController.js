@@ -6,8 +6,10 @@ const OTP = require('../model/OTP');
 const createRandomOTP = require('../helpers/createRandomOTP')
 const createRandomCard = require('../helpers/createRandomCard')
 const Account = require('../model/Account');
-const transferEmail = require('../helpers/transfer')
+const mailing = require('../helpers/transfer')
 const PhoneCard = require('../model/PhoneCard');
+const jwt = require('jsonwebtoken')
+const withdrawHandler = require('../helpers/withdrawHandler')
 const global = {
     pinCode: 0,
 }
@@ -17,7 +19,11 @@ const WalletController = {
     async recharge(req, res) {
         let result = validationResult(req);
         if (result.errors.length === 0) {
-            const { creditCardNumber, expirationDate, cvvCode, money } = req.body;
+            const { creditCardNumber, expirationDate, cvvCode, money, actor } = req.body;
+            let actorId = undefined;
+            jwt.verify(actor, process.env.SECRET_JWT_ACCESS_KEY, function(err, decoded) {
+                actorId = decoded.id
+            });
             let validCreditCard = undefined;
 
             let filter = {
@@ -98,7 +104,7 @@ const WalletController = {
                     })
                 }
             }
-            filter = { userId: req.body.userId} // need userId to find user's wallet
+            filter = { userId: actorId} // need userId to find user's wallet
             const userWallet = await Wallet.findOne(filter);
             let accountBalance = 0;
             if (userWallet) {
@@ -116,8 +122,8 @@ const WalletController = {
                 //credit card object id
                 const creditCardObjectId = validCreditCard._id;
                 const transferHistory = new TransferHistory({
-                    actor: req.body.userId,
-                    receiver: req.body.userId,
+                    actor: actorId,
+                    receiver: actorId,
                     icon: '<i class="fa-light fa-money-bill-transfer"></i>',
                     transferType: '1', // recharge
                     money: money,
@@ -162,7 +168,7 @@ const WalletController = {
     async withdraw(req, res) {
         let result = validationResult(req);
         if (result.errors.length === 0) {
-            const supportFields = ['creditCardNumber', 'expirationDate', 'cvvCode', 'message', 'money'];
+            const supportFields = ['creditCardNumber', 'expirationDate', 'cvvCode', 'message', 'money', 'actor'];
             const withdrawData = req.body;
             for (let field in withdrawData) {
                 if (!supportFields.includes(field)) {
@@ -172,7 +178,12 @@ const WalletController = {
                     })
                 }
             }
-            const { creditCardNumber, expirationDate, cvvCode, message, money } = withdrawData;
+            const { creditCardNumber, expirationDate, cvvCode, message, money, actor } = withdrawData;
+            let actorId = undefined;
+            jwt.verify(actor, process.env.SECRET_JWT_ACCESS_KEY, function(err, decoded) {
+                console.log(decoded)
+                actorId = decoded.id
+            });
             const validCreditCard = '111111';
             if (creditCardNumber !== validCreditCard) {
                 return res.status(403).json({
@@ -199,8 +210,8 @@ const WalletController = {
             }
             const creditCardObject = await CreditCard.findOne(filter)
             const data = {
-                actor: req.body.userId,
-                receiver: req.body.userId,
+                actor: actorId,
+                receiver: actorId,
                 icon: '<i class="fa-solid fa-money-bill-transfer"></i>',
                 transferType: '2', //withdraw
                 money: money,
@@ -240,7 +251,7 @@ const WalletController = {
                     if (result.code === 0) {
                         return res.status(200).json(result)
                     }
-                    return res.status(404).json(result)
+                    return res.status(200).json(result)
                 })
             }
         }
@@ -262,18 +273,41 @@ const WalletController = {
     async transfer(req, res) {
         let result = validationResult(req);
         if (result.errors.length === 0) {
-            const transferData = req.body;
-            const result = transferEmail(transferData);
-            console.log(result);
-            if (result.code !== 0) {
-                return res.status(500).json({
-                    code: 1,
-                    message: 'Gửi mail xác nhận không thành công'
+            const {actor} = req.body;
+            let actorId = undefined;
+            jwt.verify(actor, process.env.SECRET_JWT_ACCESS_KEY, (err, decoded) => {
+                actorId = decoded.id
+            })
+            console.log(actorId)
+            const filter = {
+                _id: actorId
+            }
+            await Account.findOne(filter)
+            .then(async user => {
+                const otpCode = createRandomOTP(6)
+                const otp = new OTP({
+                    code: otpCode,
+                    actor: user._id,
                 })
-            }
-            else {
-                global['pinCode'] = result.data; //otp code
-            }
+                await otp.save()
+                .then(async savedOtp => {
+                    //mailing -> mailing()
+                    mailing(user.email, savedOtp.code)
+                    global['pinCode'] = savedOtp.code
+                    return res.status(200).json({
+                        code: 0,
+                        message: 'Gửi mail xác nhận thành công',
+                        data: savedOtp.code
+                    })
+                })
+                .catch(err => {
+                    return res.status(500).json({
+                        code: 1,
+                        message: 'Gửi mail xác nhận không thành công',
+                        err: err.message
+                    })
+                })
+            })
         }
         else {
             let messages = result.mapped();
@@ -363,8 +397,11 @@ const WalletController = {
     async purchasePhoneCard(req, res) {
         let result = validationResult(req);
         if (result.errors.length === 0) {
-            const { internetService, quantity, cost, userId } = req.body;
-
+            const { internetService, quantity, totalCost, actor } = req.body;
+            let actorId = undefined;
+            jwt.verify(actor, process.env.SECRET_JWT_ACCESS_KEY, (err, decoded) => {
+                actorId = decoded.id
+            })
             if (quantity > 5) {
                 return res.status(403).json({
                     code: 1,
@@ -373,13 +410,12 @@ const WalletController = {
             }
             
             let filter = {
-                userId: userId
+                userId: actorId
             }
             
             const userWallet = await Wallet.findOne(filter)
-            const accountBalance = 0;
+            let accountBalance = 0;
             if (userWallet) accountBalance = userWallet.accountBalance
-            const totalCost = quantity * cost;
             if (accountBalance < totalCost) {
                 return res.status(500).json({
                     code: 1,
@@ -391,7 +427,7 @@ const WalletController = {
                 internetService: internetService
             }
 
-            let cards = createRandomCard(quantity) //random cards array
+            let cards = createRandomCard(parseInt(quantity)) //random cards array
             await PhoneCard.findOne(filter)
             .then(async phoneCard => {
                 cards = cards.map(card => {
@@ -399,8 +435,8 @@ const WalletController = {
                 })
                 const transactionFee = 0;
                 const transferHistory = new TransferHistory({
-                    actor: userId,
-                    receiver: userId,
+                    actor: actorId,
+                    receiver: actorId,
                     icon: '<i class="fa-light fa-cart-shopping"></i>',
                     transferType: '4', // buy phone card
                     money: totalCost,
@@ -429,7 +465,8 @@ const WalletController = {
                             code: 0,
                             message: 'Thực hiện mua thẻ điện thoại thành công',
                             data: savedWallet,
-                            cards: saveTransferHistory.phoneCardNumber
+                            cards: saveTransferHistory.phoneCardNumber,
+                            internetService: phoneCard.internetService
                         })
                     }) 
                 })
@@ -449,121 +486,7 @@ const WalletController = {
         }
     },
 
-    async withDrawHandler(savedTransferHistory) {
-        const { money, actor, transactionFee } = savedTransferHistory;
-        const filter = { userId: actor}
-        const userWallet = await Wallet.findOne(filter);
-        let accountBalance = 0;
-        if (userWallet) accountBalance = userWallet.accountBalance;
-        if (accountBalance < (money + transactionFee)) {
-            return {
-                code: 1,
-                message: 'Số dư trong ví của quý khách không đủ để thực hiện giao dịch'
-            }
-        }
-        const update = {
-            accountBalance: accountBalance - (money + transactionFee),
-        }
 
-        await Wallet.findOneAndUpdate(filter, update, {
-            new: true,
-            upsert: true,
-        })
-        .then(savedWallet => {
-            return {
-                code: 0,
-                message: 'Thực hiện rút tiền thành công',
-                data: savedWallet
-            }
-        }) 
-        .catch(()=> {
-            return {
-                code: 1,
-                message: 'Thực hiện rút tiền thất bại'
-            }
-        })
-    },
-
-    async transferHandler(savedTransferHistory) {
-        const {actor, receiver, money, transactionFee, isActor} = savedTransferHistory
-        const filterForActor = {
-            userId: actor,
-        }
-
-        const filterForReceiver = {
-            userId: receiver,
-        }
-        
-        const actorWallet = await Wallet.findOne(filterForActor);
-        const receiverWallet = await Wallet.findOne(filterForReceiver)
-
-        
-        const accountBalanceOfActor = 0;
-        const accountBalanceOfReceiver = 0;
-
-        if (actorWallet) accountBalanceOfActor = actorWallet.accountBalance;
-        if (receiverWallet) accountBalanceOfReceiver = receiverWallet.accountBalance;
-
-        //nguoi gui tra phi
-        if (isActor) {
-            if (accountBalanceOfActor < (money + transactionFee)) {
-                return {
-                    code: 1,
-                    message: 'Số dư trong ví của quý khách không đủ để thực hiện giao dịch'
-                }
-            }
-            let update = {
-                accountBalance: accountBalanceOfActor - (money + transactionFee),
-            }
-            await Wallet.findOneAndUpdate(filterForActor, update, {
-                new: true,
-                upsert: true,
-            })
-            .then(async savedWalletOfActor => {
-                update = {
-                    accountBalance: accountBalanceOfReceiver + money
-                }
-                await Wallet.findOneAndUpdate(filterForReceiver, update, {
-                    new: true,
-                    upsert: true,
-                })
-                .then(savedWalletOfReceiver => {
-                    return {
-                        code: 0,
-                        message: 'Chuyển tiền thành công',
-                        actor: savedWalletOfActor,
-                        receiver: savedWalletOfReceiver
-                    }
-                })
-            })
-        }
-        else {
-            let update = {
-                accountBalance: accountBalanceOfActor - money,
-            }
-            await Wallet.findOneAndUpdate(filterForActor, update, {
-                new: true,
-                upsert: true,
-            })
-            .then(async savedWalletOfActor => {
-                update = {
-                    accountBalance: accountBalanceOfReceiver + money - transactionFee
-                }
-                await Wallet.findOneAndUpdate(filterForReceiver, update, {
-                    new: true,
-                    upsert: true,
-                })
-                .then(savedWalletOfReceiver => {
-                    return {
-                        code: 0,
-                        message: 'Chuyển tiền thành công',
-                        actor: savedWalletOfActor,
-                        receiver: savedWalletOfReceiver
-                    }
-                })
-            })
-        }
-    },
 
 
 
@@ -582,6 +505,17 @@ const WalletController = {
         await creditCard.save()
         .then(savedCreditCard => {
             return res.json({data: savedCreditCard})
+        })
+    },
+    async addPhoneCard(req, res) {
+        const {internetService, code} = req.body;
+        const phoneCard = new PhoneCard({
+            internetService,
+            code
+        })
+        await phoneCard.save()
+        .then(data => {
+            res.json({data})
         })
     },
 

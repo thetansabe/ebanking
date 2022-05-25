@@ -564,11 +564,11 @@
     cursor: pointer;
 }
 
-.accounts_users-item{
+/* .accounts_users-item{
     border-radius: 50%;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     padding: 18px;
-}
+} */
 
 .accounts_users-item_img{
     width: 50px;

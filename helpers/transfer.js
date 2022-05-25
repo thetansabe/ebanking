@@ -6,61 +6,56 @@ const createRandomOTP = require('./createRandomOTP')
 
 function mailing(receiverMail, PIN){
   let transporter = nodemailer.createTransport({
-    host: 'mail.phongdaotao.com',
-    port: '25',
-    secure: false,
-    auth: {
-      user: process.env.EMAIL_FOR_SEND_NAME, //sinhvien@phongdaotao.com
-      pass: process.env.EMAIL_FOR_SEND_PASS //svtdtu
-    },
-    tls:{
-      rejectUnauthorized: false,
-    }
+      host: 'mail.phongdaotao.com',
+      port: '25', 
+      // service: 'gmail',
+      auth: {
+          user: process.env.EMAIL_FOR_SEND_NAME,
+          pass: process.env.EMAIL_FOR_SEND_PASS
+      },
+      tls:{
+          rejectUnauthorized: false,
+      }
   })
 
   let mailOptions = {
-    from: process.env.email,
-    to: receiverMail,
-    subject: "HiFi Ebanking transfer money",
-    text: ` This is your OTP code: \n
-      ${PIN} \n 
-      This code is only activated in 1 minutes`
+      from: process.env.EMAIL_FOR_SEND_NAME,
+      to: receiverMail,
+      subject: "HiFi Ebanking transfer money",
+      text: ` This is your OTP code: \n
+         ${PIN} \n 
+        This code is only active in 1 minute`
   }
 
   transporter.sendMail(mailOptions, (err) => {
-    if(err) console.log('send email failed: ', err)
-    else
-      console.log('email sent')
+      if(err) console.log('send email failed: ', err)
+      else
+          console.log('email sent')
   })
 }
 
 async function transfer(transferData){
-  //check if exists
-  try{
-      // const doc = await Account.findOne({email: email, phonenumber : phoneNumber})
-      // if(!doc) return {code: 114, msg: 'Invalid email or phone number, please try again'}
-      // else{
-          //create PIN
-          const test = jwt.sign({
-            data: transferData,
-          },process.env.SECRET_JWT_PIN, {expiresIn: '1m'} )
-          const otpCode = createRandomOTP(6)
-          console.log(otpCode)
-          const otp = new OTP({
-            code: otpCode,
-            actor: transferData.actorId,
-          })
-          await otp.save()
-          .then(savedOtp => {
-            //mailing -> mailing()
-            mailing(transferData.email, savedOtp.code)
-            return { code: 0, msg: 'Send PIN through email successfully', data: savedOtp.code }
-          })
-      // }   
-  }
-  catch(err){
-      return {code:113, msg: 'Unexpected error when reset password'}
-  }
+  const otpCode = createRandomOTP(6)
+  const otp = new OTP({
+    code: otpCode,
+    actor: transferData.actorId,
+  })
+  return await otp.save()
+  .then(async savedOtp => {
+    //mailing -> mailing()
+    let resp = await wrappedSendMail(transferData.email, savedOtp.code)
+    console.log(resp)
+    return new Promise((resolve, reject) => {
+      const result = { code: 0, message: 'Send PIN through email successfully', data: savedOtp.code }
+      resolve(result)
+    })
+  })
+  .catch(err => {
+    return new Promise((resolve, reject) => {
+      const result = { code: err.code, msg: err.message}
+      resolve(result)
+    })
+  })
 }
 
-module.exports = transfer
+module.exports = mailing
