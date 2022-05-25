@@ -1209,8 +1209,96 @@ if(register){
   })
 }
 
+///////////////////////////ADMIN
+
+const changeDateDB = (str) => {
+  const date = new Date(str)
+  const month = date.getMonth() + 1
+  const day = date.getDate()
+  const year = date.getFullYear()
+
+  return day + '-' + month + '-' + year
+}
+
+function handleProfile(id) {
+  fetch(`http://localhost:3000/admin/search/${id}`)
+  .then(res => res.json())
+  .then(response => {
+    console.log(response)
+    const profileModal = document.querySelector('#showFullInfoModal')
+    const userName = profileModal.querySelector('.modal_info-username')
+    const email = profileModal.querySelector('.modal_info-email')
+    const address = profileModal.querySelector('.modal_info-address')
+    const frontId = profileModal.querySelector('.modal_info-front_id')
+    const backId = profileModal.querySelector('.modal_info-back_id')
+    const name = profileModal.querySelector('.modal_info-fullname')
+    const phone = profileModal.querySelector('.modal_info-phone')
+    const birthDay = profileModal.querySelector('.modal_info-birth')
+    
+    userName.innerText = response.data.username ||'';
+    email.innerText = response.data.email || '';
+    address.innerText = response.data.address || '';
+    name.innerText = response.data.hoten;
+    phone.innerText = response.data.phonenumber;
+    birthDay.innerText = changeDateDB(response.data.birth)
+
+    frontId.setAttribute('src', response.data.id_front.slice(6) || '')
+    backId.setAttribute('src', response.data.id_back.slice(6) || '')
+
+    var myModal = new bootstrap.Modal(document.getElementById('showFullInfoModal'), {
+      keyboard: false
+    })
+    myModal.show()
+  })
+}
+
 const pendingPage = document.querySelector('#waiting-content')
 if (pendingPage) {
+
+  function handleAuth(id){
+    fetch('/admin/activateAccount', {
+      method: 'put',
+      headers: {'Content-Type' : 'application/json'},
+      body: JSON.stringify({id})
+    })
+    .then(res => res.json())
+    .then(data => {
+      if(data.code === 0){
+        location.reload()
+      }
+    })
+    
+  }
+
+  function handleDeactive(id){
+    fetch('/admin/deactivateAccount', {
+      method: 'put',
+      headers: {'Content-Type' : 'application/json'},
+      body: JSON.stringify({id})
+    })
+    .then(res => res.json())
+    .then(data => {
+      if(data.code === 0){
+        location.reload()
+      }
+    })
+  }
+
+  function handleRequireId(id){
+    fetch('/admin/requireCertificate', {
+      method: 'put',
+      headers: {'Content-Type' : 'application/json'},
+      body: JSON.stringify({id})
+    })
+    .then(res => res.json())
+    .then(data => {
+      if(data.code === 0){
+        location.reload()
+      }
+    })
+  }
+
+  //render UI
   fetch('http://localhost:3000/admin/pending')
   .then(res => res.json())
   .then(response => {
@@ -1226,39 +1314,46 @@ if (pendingPage) {
                         Ngày khởi tạo: ${account.createdAt}
                     </p>
                 </div>
-                <button type="button" class="container_btn--primary btn btn-outline-success p-2" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i style="margin-right: 6px;" class="fa fa-check" aria-hidden="true"></i>Xác minh</button>
-                <button type="button" class="container_btn--primary btn btn-outline-danger p-2" data-bs-toggle="modal" data-bs-target="#staticBackdropRefuse"><i style="margin-right: 6px;" class="fa-solid fa-x"></i></i>Hủy</button>
-                <button type="button" class="container_btn--primary btn btn-outline-warning p-2" data-bs-toggle="modal" data-bs-target="#staticBackdropRefuse"><i style="margin-right: 6px;" class="fa-solid fa-file"></i></i>Yêu cầu bổ sung thông tin</button>
-                <button  onclick="handleProfile('${account._id}')" id="pending_accounts-profile-btn" type="button" class="container_btn--primary btn btn-outline-info p-2" data-bs-toggle="modal" data-bs-target="#profile"><i style="margin-right: 6px;" class="fa-solid fa-circle-info"></i></i>Xem thông tin chi tiết</button>
+
+                <button 
+                  type="button" 
+                  class="container_btn--primary btn btn-outline-success p-2"
+                  onclick = "handleAuth('${account._id}')"
+                >
+                  <i style="margin-right: 6px;" class="fa fa-check" aria-hidden="true"></i>Xác minh
+                </button>
+
+                <button 
+                  type="button" 
+                  class="container_btn--primary btn btn-outline-danger p-2"
+                  onclick = "handleDeactive('${account._id}')"
+                >
+                  <i style="margin-right: 6px;" class="fa-solid fa-x"></i></i>Hủy
+                </button>
+
+                <button 
+                  type="button" 
+                  class="container_btn--primary btn btn-outline-warning p-2"
+                  onclick = "handleRequireId('${account._id}')"
+                >
+                  <i style="margin-right: 6px;" class="fa-solid fa-file"></i></i>Yêu cầu bổ sung thông tin
+                </button>
+
+                <button  
+                  onclick="handleProfile('${account._id}')" 
+                  id="pending_accounts-profile-btn" 
+                  type="button" 
+                  class="container_btn--primary btn btn-outline-info p-2" 
+                >
+                  <i style="margin-right: 6px;" class="fa-solid fa-circle-info"></i></i>Xem thông tin chi tiết
+                </button>
             </div>`
       })
     }
   })
+  
+  
 
-  function handleProfile(id) {
-    fetch(`http://localhost:3000/admin/search/${id}`)
-    .then(res => res.json())
-    .then(response => {
-      console.log(response)
-      const profileModal = document.querySelector('#profile')
-      const userName = profileModal.querySelector('#pending_accounts-username')
-      const email = profileModal.querySelector('#pending_accounts-email')
-      const address = profileModal.querySelector('#pending_accounts-address')
-      const frontId = profileModal.querySelector('#pending_accounts-front-id')
-      const backId = profileModal.querySelector('#pending_accounts-back-id')
-      const name = profileModal.querySelector('#pending_accounts-name')
-      const phone = profileModal.querySelector('#pending_accounts-phone')
-      const birthDay = profileModal.querySelector('#pending_accounts-birthday')
-      userName.innerText = response.data.username ||'';
-      email.innerText = response.data.email || '';
-      address.innerText = response.data.address || '';
-frontId.setAttribute('src', response.data.id_front || '')
-      backId.setAttribute('src', response.data.id_back || '')
-      name.innerText = response.data.hoten;
-      phone.innerText = response.data.phonenumber;
-      birthDay.innerText = response.data.birth
-    })
-  }
 }
 
 const activatedPage = document.querySelector('#activated-content')
@@ -1278,38 +1373,24 @@ if (activatedPage) {
                         Ngày khởi tạo: ${account.createdAt}
                     </p>
                 </div>
-                <button type="button" class="container_btn--primary btn btn-success p-2"><i style="margin-right: 6px;" class="fa fa-check" aria-hidden="true"></i>Xác minh</button>
-                <button  onclick="handleProfile('${account._id}')" id="pending_accounts-profile-btn" type="button" class="container_btn--primary btn btn-outline-info p-2" data-bs-toggle="modal" data-bs-target="#profile"><i style="margin-right: 6px;" class="fa-solid fa-circle-info"></i></i>Xem thông tin chi tiết</button>
+                
+                <button  
+                  onclick="handleProfile('${account._id}')" 
+                  id="pending_accounts-profile-btn" 
+                  type="button" 
+                  class="container_btn--primary btn btn-outline-info p-2" 
+                  >
+                    <i style="margin-right: 6px;" class="fa-solid fa-circle-info"></i></i>Xem thông tin chi tiết
+                  </button>
             </div>`
       })
     }
   })
 
-  function handleProfile(id) {
-    fetch(`http://localhost:3000/admin/search/${id}`)
-    .then(res => res.json())
-    .then(response => {
-      console.log(response)
-      const profileModal = document.querySelector('#profile')
-      const userName = profileModal.querySelector('#pending_accounts-username')
-      const email = profileModal.querySelector('#pending_accounts-email')
-      const address = profileModal.querySelector('#pending_accounts-address')
-      const frontId = profileModal.querySelector('#pending_accounts-front-id')
-      const backId = profileModal.querySelector('#pending_accounts-back-id')
-      const name = profileModal.querySelector('#pending_accounts-name')
-      const phone = profileModal.querySelector('#pending_accounts-phone')
-      const birthDay = profileModal.querySelector('#pending_accounts-birthday')
-      userName.innerText = response.data.username ||'';
-      email.innerText = response.data.email || '';
-      address.innerText = response.data.address || '';
-      frontId.setAttribute('src', response.data.id_front || '')
-      backId.setAttribute('src', response.data.id_back || '')
-      name.innerText = response.data.hoten;
-      phone.innerText = response.data.phonenumber;
-      birthDay.innerText = response.data.birth
-    })
-  }
+  
 }
+
+
 const banPage = document.querySelector('#ban-content')
 if (banPage) {
   fetch('http://localhost:3000/admin/lock')

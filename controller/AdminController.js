@@ -5,27 +5,35 @@ const walletController = require('./WalletController')
 
 const AdminController = {
     async requireCertificate(req, res, next) {
-        const id = req.params.id;
+        const id = req.body.id;
+        console.log('body: ', req.body)
+        console.log(id)
         const filter = {
             _id: id,
         }
 
         const update = {
-            acc_status: 1,
-            acc_info: 'unauthorized'
+            acc_status: 3,
+            acc_info: 'pending (require update ID images)'
         }
         await Account.findOneAndUpdate(filter, update, {
             new: true
         })
         .then(doc => {
-            res.status(200).json({
+
+            req.session.flash = {
+                type: 'success',
+                intro: 'Update Successfully',
+                message: 'Request user to update their ID image'
+            }
+            return res.status(200).json({
                 code: 0,
                 message: 'Admin yêu cầu bỏ sung chứng minh nhân dân cho tài khoản thành công',
                 data: doc
             })
         })
         .catch(err => {
-            res.status(500).json({
+            return res.status(500).json({
                 code: 1,
                 message: 'Admin yêu cầu bổ sung chứng minh nhân dân cho tài khoản thất bại',
                 err: err.message
@@ -34,7 +42,7 @@ const AdminController = {
     },
 
     async deactivateAccount(req, res, next) {
-        const id = req.params.id;
+        const id = req.body.id;
         const filter = {
             _id: id,
         }
@@ -47,6 +55,12 @@ const AdminController = {
             new: true
         })
         .then(doc => {
+            req.session.flash = {
+                type: 'success',
+                intro: 'Update Successfully',
+                message: 'Deactivated a user'
+            }
+
             res.status(200).json({
                 code: 0,
                 message: 'Admin hủy xác minh tài khoản thành công',
@@ -63,7 +77,7 @@ const AdminController = {
     },
     
     async activateAccount(req, res, next) {
-        const id = req.params.id;
+        const id = req.body.id;
         const filter = {
             _id: id,
         }
@@ -77,6 +91,12 @@ const AdminController = {
             new: true
         })
         .then(doc => {
+            req.session.flash = {
+                type: 'success',
+                intro: 'Update Successfully',
+                message: 'Authorized a user'
+            }
+
             res.status(200).json({
                 code: 0,
                 message: 'Admin xác minh tài khoản thành công',

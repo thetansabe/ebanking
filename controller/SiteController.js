@@ -4,7 +4,7 @@ const Account = require('../model/Account')
 const SiteController = {
     async index(req, res, next) {
         await TransferHistory.find({})
-        res.render('admin', {
+        res.render('admin_layout', {
             layout: 'admin_layout'
         })
     },
