@@ -14,9 +14,31 @@ function navigateHighLight(){
 
 }
 
+function userInfoLayout(){
+  const userName = document.querySelector('.header_navbar-user_name')
+  const userId = document.querySelector('.header_navbar-user_id.span')
+
+  const authToken = `Bearer ${localStorage.getItem('accessToken')}`
+  fetch('/users/userInfo', {
+    method: 'get',
+    headers: {
+      'Authorization' : authToken,
+      'Content-Type' : 'application/json'
+    },
+    redirect: 'follow',
+  })
+  .then(res => res.json())
+  .then(data => {
+    userName.innerText = data.hoten
+    userId.innerText = data.username
+  })
+}
+
 const layout = document.querySelector('.my_container')
 if(layout){
   navigateHighLight()
+
+  userInfoLayout()
 
   function handleSignOut(){
     console.log('aloo')
@@ -214,43 +236,138 @@ if(dashboard){
 /////////////////////////PROFILE
 const profile = document.querySelector('.account_content')
 if(profile){
-    function handleUpdateInfo(icon){
-        console.log(icon.parentElement.innerText)
-        //return icon.parentElement.innerText
-    }   
+    const authToken = `Bearer ${localStorage.getItem('accessToken')}`
+    //render update ID form
+    const leftHalf = profile.querySelector('.left-half')
+
+    const form = document.createElement('form')
+    form.classList.add('profile_update-id_wrapper')
+    form.setAttribute('enctype', 'multipart/form-data')
+    form.setAttribute('action', '/users/updateIdentityCard')
+    form.setAttribute('method', 'post')
+
+    const content = `
+      <div class="input_form">
+          <p class="input_form-title front_id">Front ID image: </p>
+          <input type="file" name = "id_front" class="input_form-holder front_id" accept="image/*">
+      </div>
+
+
+      <div class="input_form">
+          <p class="input_form-title">Back ID image: </p>
+          <input type="file" name="id_back" class="input_form-holder back_id " accept="image/*">
+      </div>
+
+      
+      <div class="input_form">
+          <p class="input_form-title submission">Update ID images: </p>
+          <span class="update_id-span"></span>
+          <button type = "submit" class="btn btn-primary input_form-pass_btn">Update</button>
+      </div>
+    `
+
+    form.innerHTML = content;
+
+    function renderUserInfo(){
+      const username = document.querySelector('.input_form-holder.username')
+      const email = document.querySelector('.input_form-holder.email')
+      const address = document.querySelector('.input_form-holder.address')
+      const fullName = document.querySelector('.input_form-holder.full_name')
+      const contact = document.querySelector('.input_form-holder.phone_number')
+      const dateBirth = document.querySelector('.input_form-holder.date_birth')
+      const status = document.querySelector('.input_form-holder.status')
+
+      
+      fetch('/users/userInfo', {
+        method: 'get',
+        headers: {
+          'Authorization' : authToken,
+          'Content-Type' : 'application/json'
+        },
+        redirect: 'follow',
+      })
+      .then(res => res.json())
+      .then(data => {
+        let birth = new Date(data.birth)
+        birth = birth.getFullYear() + '-'  + (birth.getMonth() + 1) + '-' + birth.getDate() 
+        //console.log(data)
+        //console.log(birth)
+        username.innerText = data.username
+        email.innerText = data.email
+        address.innerText = data.address
+        fullName.innerText = data.hoten
+        contact.innerText = data.phonenumber
+        dateBirth.innerText = birth
+        status.innerText = data.acc_info
+
+        if(data.acc_status === 3){
+          leftHalf.appendChild(form)
+          updateIdImage()
+        }
+      })
+      .catch(err => {
+        //loi vi token het han -> ban ra login
+        window.location.href = '/login'
+      })
+    }
+
+    renderUserInfo() 
+
+
+    //update ID image
+    function updateIdImage(){
+      form.addEventListener('submit', e => {
+        e.preventDefault()
+  
+        const body = new FormData(e.target)
+  
+        fetch('/users/updateIdentityCard', {
+          method: 'put',
+          headers: {
+            'Authorization' : authToken,
+          },
+          body
+        })
+        .then(res => res.json())
+        .then(data => {
+          location.reload()
+        })
+      })
+    }
+    
 }
 
 ////////////////////////TRANSFER
 const transfer = document.querySelector('.transfer_content')
 
 if(transfer){
-    const searchInput = document.querySelector('.payee_box-input_holder')
-    searchInput.addEventListener('input', function(e) {
-      const value = e.target.value;
-      if (value !== '') {
-        fetch(`http://localhost:3000/search/${value}`, {
-          method: 'POST',
-        })
-        .then(res => res.json())
-        .then(response => {
-          const usersList = document.querySelector('.payee_box-accounts_users')
-          usersList.innerHTML = ``;
-          if (response.code == 0) {
-            response.data.forEach(user => {
-              usersList.innerHTML += `<div class="payee_box-accounts_users-wrapper" onclick="handleChooseAccount(this)">
-              <div class="accounts_users-item">
-              <img class = "accounts_users-item_img" src="images/avatar/unknown_male.png" alt="avatar">
-              </div>
-              <div class="accounts_users-item_info">
-              <p class="accounts_users-item_name">${user.username}</p>
-              <p class="accounts_users-item_id text-warning">#${user._id}</p>
-              </div>
-              </div>`
-            })
-          }
-        })
-      }
-    })
+  const searchInput = document.querySelector('.payee_box-input_holder')
+  searchInput.addEventListener('input', function(e) {
+    const value = e.target.value;
+    if (value !== '') {
+      fetch(`http://localhost:3000/search/${value}`, {
+        method: 'POST',
+      })
+      .then(res => res.json())
+      .then(response => {
+        const usersList = document.querySelector('.payee_box-accounts_users')
+        usersList.innerHTML = ``;
+        if (response.code == 0) {
+          response.data.forEach(user => {
+            usersList.innerHTML += `<div class="payee_box-accounts_users-wrapper" onclick="handleChooseAccount(this)">
+            <div class="accounts_users-item">
+            <img class = "accounts_users-item_img" src="images/avatar/unknown_male.png" alt="avatar">
+            </div>
+            <div class="accounts_users-item_info">
+            <p class="accounts_users-item_name">${user.username}</p>
+            <p class="accounts_users-item_id text-warning">#${user._id}</p>
+            </div>
+            </div>`
+          })
+        }
+      })
+    }
+  })
     function resetSearch(){
       const searchInput = document.querySelector('.payee_box-input_holder')
 
@@ -288,14 +405,14 @@ if(transfer){
       })
 
       if(!user_id || !amount_str){
-        renderMsg.innerText = 'Thiếu số tiền càn chuyển'
+        renderMsg.innerText = 'Thieu thong tin chuyen tien'
         
       }else{
         
         let transfer_int = parseInt(amount_int)
         let feeTransfer = Math.ceil(transfer_int*5/100)
 
-        dataBodyFetch = {actor: localStorage.getItem('accessToken')}
+        dataBodyFetch = {amount: transfer_int, fee: feeTransfer}
 
         transfer_int = convertToStr(transfer_int)
         feeTransfer = convertToStr(feeTransfer)
@@ -328,7 +445,6 @@ if(transfer){
 
       dataBodyFetch = {...dataBodyFetch, chargedAccount}
 
-      console.log(dataBodyFetch)
       console.log('xu li confirm transfer', dataBodyFetch)
     }
 }
@@ -658,6 +774,7 @@ if(dep_with){
 
         // renderTotal.innerHTML = `${total} VND`
         // $('#withdrawModal').modal('show')
+
         cashOutFetchBody = {
           creditCardNumber: cardNo, 
           cvvCode: cvv, 
@@ -759,6 +876,7 @@ if(login){
           const status = data.status_for_direct
 
           localStorage.setItem('accessToken', data.accessToken)
+  
           return status //good to go 
         }
         return data.msg
@@ -787,27 +905,90 @@ if(login){
 const forget_pass = document.querySelector('.login_content.forget_pass')
 if(forget_pass){
 
+  function validateForgetPass(email, phoneNumber, pass, confirmPass){
+    let errors = []
+    
+    if(!email){
+      errors.push({type: 1, msg: 'Missing email'})
+    }
+    else if(!validateEmail(email))
+      errors.push({type: 1, msg: 'Invalid email type'})
+
+    if(!phoneNumber){
+      errors.push({type: 2, msg: 'Missing phone number'})
+    }
+    else if(phoneNumber.length < 10)
+      errors.push({type: 2, msg: 'Phone number must be at least 10 digits'})
+
+    if(!pass){
+      errors.push({type: 3, msg: 'Missing password'})
+    }
+    else if(pass.length < 6)
+      errors.push({type: 3, msg: 'Password must be at least 6 char'})
+
+    if(!confirmPass){
+      errors.push({type: 4, msg: 'Missing confirm password'})
+    }
+    else if(confirmPass !== pass)
+      errors.push({type: 4, msg: 'Confirm password must be identical to password'})
+
+    return errors
+  }
+
   function handleForgetPass(){
 
-    const email = document.querySelector('#forget_pass-email').value
-    const phoneNumber = document.querySelector('#forget_pass-phone_num').value
-    const pass = document.querySelector('#forget_pass-new_pass').value
-    const confirmPass = document.querySelector('#forget_pass-reenter_pass').value
+    const email = document.querySelector('#forget_pass-email')
+    const phoneNumber = document.querySelector('#forget_pass-phone_num')
+    const pass = document.querySelector('#forget_pass-new_pass')
+    const confirmPass = document.querySelector('#forget_pass-reenter_pass')
+    const lastSpan = forget_pass.querySelector('.login_box-msg.last')
 
+    lastSpan.innerText = ''
+    email.parentElement.querySelector('.login_box-msg').innerText = ''
+    phoneNumber.parentElement.querySelector('.login_box-msg').innerText = ''
+    pass.parentElement.querySelector('.login_box-msg').innerText = ''
+    confirmPass.parentElement.querySelector('.login_box-msg').innerText = ''
+    
     //console.log(email, phoneNumber, pass, confirmPass)
+    const errors = validateForgetPass(email.value, phoneNumber.value, pass.value, confirmPass.value)
 
+    if(errors.length > 0){
+      errors.forEach(err => {
+        if(err.type === 1)
+          email.parentElement.querySelector('.login_box-msg').innerText = err.msg
+        if(err.type === 2)
+         phoneNumber.parentElement.querySelector('.login_box-msg').innerText = err.msg
+        if(err.type === 3)
+          pass.parentElement.querySelector('.login_box-msg').innerText = err.msg
+        if(err.type === 4)
+          confirmPass.parentElement.querySelector('.login_box-msg').innerText = err.msg
 
-    ////validate xong roi moi cho phep fetch
-    fetch('users/forgetPassword', {
-      method: 'post',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({email, phoneNumber, pass, confirmPass})
-    })
-    .then(res => res.json())
-    .then(data => {
-      //data.code !== 0 => render loi ra day
-      console.log(data)
-    })
+      })
+    }else{
+      ////validate xong roi moi cho phep fetch
+      fetch('users/forgetPassword', {
+        method: 'post',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          email: email.value, 
+          phoneNumber: phoneNumber.value, 
+          pass: pass.value, 
+          confirmPass: confirmPass.value
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        //data.code !== 0 => render loi ra day
+        if(data.code !== 0){
+          lastSpan.innerText = data.msg
+        }else{
+          lastSpan.style.color = 'green'
+          lastSpan.innerText = data.msg
+        }
+      })
+    }
+
+    
   }
 }
 
@@ -815,36 +996,83 @@ if(forget_pass){
 /////////////CHANGE PASS
 const change_pass = document.querySelector('.change_pass')
 if(change_pass){
+  function validateChangePass(old, newPass, confirm){
+    let errors = []
+
+    if(!old){
+      errors.push({type: 1, msg: 'Missing old password'})
+    }
+    else if(old.length < 6){
+      errors.push({type: 1, msg: 'Password must be at least 6 char'})
+    }
+
+    if(!newPass){
+      errors.push({type: 2, msg: 'Missing new pass password'})
+    }
+    else if(newPass.length < 6){
+      errors.push({type: 2, msg: 'New password must be at least 6 char'})
+    }
+
+    if(!confirm){
+      errors.push({type: 3, msg: 'Missing confirm password'})
+    }
+    else if(confirm !== newPass){
+      errors.push({type: 3, msg: 'Confirm password must be indentical new password'})
+    }
+
+    return errors
+  }
+
   function handleChangePass(){
-    const oldPassword = document.querySelector('#change_pass-old_pass').value
-    const newPassword = document.querySelector('#change_pass-new_pass').value
-    const confirmPassword = document.querySelector('#change_pass-reenter_pass').value
+    const oldPassword = document.querySelector('#change_pass-old_pass')
+    const newPassword = document.querySelector('#change_pass-new_pass')
+    const confirmPassword = document.querySelector('#change_pass-reenter_pass')
     const authToken = `Bearer ${localStorage.getItem('accessToken')}`
-    
-    //console.log(oldPassword, newPassword, confirmPassword)
-    //////validate
+    const lastMsg = change_pass.querySelector('.login_box-msg.last')
 
-    //console.log('accessToken', localStorage.getItem('accessToken'))
+    oldPassword.parentElement.querySelector('.login_box-msg').innerText = ''
+    newPassword.parentElement.querySelector('.login_box-msg').innerText = ''
+    confirmPassword.parentElement.querySelector('.login_box-msg').innerText = ''
+    lastMsg.innerText = ''
 
-    //////validate thanh cong thi moi duoc fetch
-    fetch('/users/changePassword', {
-      method: 'put',
-      headers: {
-        'Authorization' : authToken,
-        'Content-Type' : 'application/json'
-      },
-      body: JSON.stringify({
-        oldPassword, newPassword, confirmPassword
+    const errors = validateChangePass(oldPassword.value, newPassword.value, confirmPassword.value)
+
+    if(errors.length > 0){
+      errors.forEach(err => {
+        if(err.type === 1)
+          oldPassword.parentElement.querySelector('.login_box-msg').innerText = err.msg
+
+        if(err.type === 2)
+          newPassword.parentElement.querySelector('.login_box-msg').innerText = err.msg
+        
+        if(err.type === 3)
+          confirmPassword.parentElement.querySelector('.login_box-msg').innerText = err.msg   
       })
-    })
-    .then(res => res.json())
-    .then(data => {
-      console.log(data)
-      if(data.code === 0){
-        window.location.href = '/'
-      }
-      //else render loi data.msg ra giao dien
-    })
+    }else{
+      //////validate thanh cong thi moi duoc fetch
+      fetch('/users/changePassword', {
+        method: 'put',
+        headers: {
+          'Authorization' : authToken,
+          'Content-Type' : 'application/json'
+        },
+        body: JSON.stringify({
+          oldPassword: oldPassword.value, 
+          newPassword: newPassword.value, 
+          confirmPassword: confirmPassword.value
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data)
+        if(data.code === 0){
+          window.location.href = '/'
+        }else{
+          lastMsg.innerText = data.msg
+        }
+      })
+    }
+    
   }
 }
 
@@ -875,6 +1103,110 @@ if(first_change){
       }
     })
   }
+}
+
+const validateEmail = (email) => {
+  return String(email)
+      .toLowerCase()
+      .match(
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      )
+}
+
+
+//REGISTER
+const register = document.querySelector('.login_content.register')
+if(register){
+
+  function validateRegister(fullName, email, dateBirth, address, frontId, backId, phoneNumber){
+    let errors = []
+
+    if(!fullName) errors.push({type: 1, msg: 'Missing full name'})
+
+    if(!email) errors.push({type: 2, msg: 'Missing email'})
+    else if(!validateEmail(email))
+      errors.push({type: 2, msg: 'Wrong email format'})
+
+    if(!address) errors.push({type: 3, msg: 'Missing address'})
+
+    if(!frontId) errors.push({type: 4, msg: 'Missing ID front image'})
+
+    if(!backId) errors.push({type: 5, msg: 'Missing id back image'})
+
+    if(!phoneNumber) errors.push({type: 6, msg: 'Missing phone number'})
+
+    if(!dateBirth) errors.push({type: 7, msg: 'Missing date of birth'})
+    else{
+      const myDate = new Date(dateBirth)
+      const today = new Date()
+      
+      if(myDate > today)
+        errors.push({type: 7, msg: 'Invalid date'})
+      else if(today.getFullYear() - myDate.getFullYear() < 18)
+        errors.push({type: 7, msg: 'Must be at least 18 years old'})
+    }
+    return errors
+  }
+
+  register.addEventListener('submit', e => {
+    e.preventDefault()
+    const fullName = register.querySelector('#register_box-name')
+    const email = register.querySelector('#register_box-email')
+    const dateBirth = register.querySelector('#register_box-date_birth')
+    const address = register.querySelector('#register_box-address')
+    const frontId = register.querySelector('#register_box-id_front')
+    const backId = register.querySelector('#register_box-id_back')
+    const phoneNumber = register.querySelector('#register_box-phone')
+
+    const lastMsg = register.querySelector('.login_box-msg.last')
+
+    lastMsg.innerHTML = ''
+    fullName.parentElement.querySelector('.login_box-msg').innerText = ''
+    email.parentElement.querySelector('.login_box-msg').innerText = ''
+    dateBirth.parentElement.querySelector('.login_box-msg').innerText = ''
+    address.parentElement.querySelector('.login_box-msg').innerText = ''
+    frontId.parentElement.querySelector('.login_box-msg').innerText = ''
+    backId.parentElement.querySelector('.login_box-msg').innerText = ''
+    phoneNumber.parentElement.querySelector('.login_box-msg').innerText = ''
+    
+    const errors = 
+      validateRegister(fullName.value, email.value, dateBirth.value, address.value, frontId.value, backId.value, phoneNumber.value)
+    
+    if(errors.length > 0){
+      errors.forEach(err => {
+        if(err.type === 1)
+          fullName.parentElement.querySelector('.login_box-msg').innerText = err.msg
+        if(err.type === 2)
+          email.parentElement.querySelector('.login_box-msg').innerText = err.msg
+        if(err.type === 3)
+          address.parentElement.querySelector('.login_box-msg').innerText = err.msg
+        if(err.type === 4)
+          frontId.parentElement.querySelector('.login_box-msg').innerText = err.msg
+        if(err.type === 5)
+          backId.parentElement.querySelector('.login_box-msg').innerText = err.msg
+        if(err.type === 6)
+          phoneNumber.parentElement.querySelector('.login_box-msg').innerText = err.msg
+        if(err.type === 7)
+          dateBirth.parentElement.querySelector('.login_box-msg').innerText = err.msg
+      })
+    }else{
+      const body = new FormData(e.target)
+
+      fetch('/users/register', {
+        method: 'post',
+        body,
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.code !== 0){
+          lastMsg.innerHTML = data.msg
+        }else{
+          window.location.href = '/login'
+        }
+      })
+    }
+    
+  })
 }
 
 const pendingPage = document.querySelector('#waiting-content')
@@ -1078,3 +1410,4 @@ if (deactivatedPage) {
     })
   }
 }
+
