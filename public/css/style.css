@@ -556,6 +556,8 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    overflow-x: scroll;
+    padding: 6px;
 }
 
 .payee_box-accounts_users-wrapper{
@@ -993,6 +995,41 @@
     position: fixed;
 }  
 
+/* responsive main layout */
+@media (max-width: 480px) {
+  .body{
+    padding: 0;
+  }
+  .header_navbar-logo_brand{
+    display: none;
+  }
+  .header_navbar-user{
+    display: none;
+  }
+  .left_navbar{
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .account_content-avatar{
+    margin-inline: auto;
+  }
+  .transfer_content{
+    padding: 0;
+  }
+  .row.buy_cards-content_row{
+    width: auto;
+  }
+  .dashboard_history-middle{
+    display: none;
+  }
+  .dashboard_history-right{
+    display: none;
+  }
+  .left_navbar-item{
+    width: 126px;
+    height: 88px;
+  }
+}
 
 /* admin */
 /* @charset "UTF-8"; */
