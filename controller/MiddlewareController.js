@@ -83,17 +83,38 @@ const middelwareController =
             return res.redirect(303, '/login')
         
         jwt.verify(refreshToken, process.env.SECRET_JWT_REFRESH_KEY, (err, user) => {
-            //check token ngau nhien
-            if(err){
+
+            if(user.acc_status === 1 || user.acc_status === 2 || user.acc_status === 3)
+                next()
+            else{
                 req.session.flash = {
                     type: 'danger',
                     intro: 'Unauthorized!',
                     message: 'Failed to access, wrong account perhaps'
                 }
                 return res.redirect(303, '/login')
-            }   
-            
-            next()
+            } 
+        })          
+    },
+
+    renderAdmin : (req, res, next) => {
+        const refreshToken = req.cookies.refreshToken
+        if (!refreshToken) 
+            return res.redirect(303, '/login')
+        
+        jwt.verify(refreshToken, process.env.SECRET_JWT_REFRESH_KEY, (err, user) => {
+            const ADMIN_ACC_STATUS  = parseInt(process.env.ADMIN_CODE)
+
+            if(user.acc_status === ADMIN_ACC_STATUS)
+                next()
+            else{
+                req.session.flash = {
+                    type: 'danger',
+                    intro: 'Unauthorized!',
+                    message: 'Failed to access, wrong account perhaps'
+                }
+                return res.redirect(303, '/login')
+            } 
         })          
     },
 }

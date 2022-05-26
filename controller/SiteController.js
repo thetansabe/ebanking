@@ -2,12 +2,12 @@ const TransferHistory = require('../model/TransferHistory')
 const Account = require('../model/Account')
 
 const SiteController = {
-    async index(req, res, next) {
-        await TransferHistory.find({})
+    index(req, res, next) {
         res.render('admin_layout', {
             layout: 'admin_layout'
         })
     },
+
     activated(req, res, next) {
         res.render('activated', {
             layout: 'admin_layout'
@@ -76,6 +76,18 @@ const SiteController = {
                 code: 1,
                 message: err.message,
             })
+        })
+    },
+
+    transfer(req, res, next) {
+        res.render('admin_transfer', {
+            layout: 'admin_layout'
+        })
+    },
+
+    withdraw (req, res, next) {
+        res.render('admin_withdraw', {
+            layout: 'admin_layout'
         })
     }
 }
