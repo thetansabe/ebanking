@@ -17,38 +17,6 @@
                     <h5 class="payee_box-accounts_title">Choose an account below to procceed purchase</h5>
 
                     <div class="payee_box-accounts_users">
-                        <div class="payee_box-accounts_users-wrapper" onclick="handleChooseAccount(this)">
-                            <div class="accounts_users-item">
-                                <img class = "accounts_users-item_img" src="images/avatar/unknown_male.png" alt="avatar">
-                            
-                            </div>
-                            <div class="accounts_users-item_info">
-                                <p class="accounts_users-item_name">William</p>
-                                <p class="accounts_users-item_id text-warning">#32456789</p>
-                            </div>
-                        </div>
-
-                        <div class="payee_box-accounts_users-wrapper" onclick="handleChooseAccount(this)">
-                            <div class="accounts_users-item">
-                                <img class = "accounts_users-item_img" src="images/avatar/unknown_male.png" alt="avatar">
-                            
-                            </div>
-                            <div class="accounts_users-item_info">
-                                <p class="accounts_users-item_name">William</p>
-                                <p class="accounts_users-item_id text-warning">#32456100</p>
-                            </div>
-                        </div>
-
-                        <div class="payee_box-accounts_users-wrapper" onclick="handleChooseAccount(this)">
-                            <div class="accounts_users-item">
-                                <img class = "accounts_users-item_img" src="images/avatar/unknown_male.png" alt="avatar">
-                            
-                            </div>
-                            <div class="accounts_users-item_info">
-                                <p class="accounts_users-item_name">William</p>
-                                <p class="accounts_users-item_id text-warning">#32456200</p>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -65,13 +33,13 @@
                             </div>
 
                             <div class="form_balance-item">
-                                <h6 class="form_balance-title">Account number: </h6>
-                                <span class="form_balance-amount">#345345879</span>
+                                <h6 class="form_balance-title">Account's username: </h6>
+                                <span class="form_balance-amount">#8584950818</span>
                             </div>
                         </div>
 
                         <div class="transfer_box-form_item">
-                            <p class="transfer_box-form_title">Target user id</p>
+                            <p class="transfer_box-form_title">Target's username</p>
                             <input 
                                 name = "target-id" 
                                 type="text" 
@@ -90,6 +58,21 @@
                                 value="" data-type="currency" 
                                 placeholder="1,000,000.00 VND">
                         </div>
+
+                        {{!-- copy tu deposit_withdraw sang --}}
+                        <div class="deposit_form-box withdraw">
+                        <h6 class="deposit_form-title withdraw">Message</h6>
+                        <textarea 
+                            type="text" 
+                            name="cash_out_msg" 
+                            id="transfer_msg" 
+                            class="transfer_box-form_input deposit_form-input"
+                            placeholder="Your message ..."
+                        ></textarea>
+
+                        <span class="amount_err deposit_form-err withdraw"></span>
+                        </div>
+                        {{!-- copy tu deposit_withdraw sang --}}
 
                         <h6 class="transfer_box-invalid_input"></h6>
                         <button 

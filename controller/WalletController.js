@@ -10,6 +10,7 @@ const mailing = require('../helpers/transfer')
 const PhoneCard = require('../model/PhoneCard');
 const jwt = require('jsonwebtoken')
 const withdrawHandler = require('../helpers/withdrawHandler')
+const nodemailer = require('nodemailer');
 const global = {
     pinCode: 0,
 }
@@ -98,7 +99,7 @@ const WalletController = {
             else if (validCreditCard.status === 0) {
                 const maximumRechargeMoney = 1000000;
                 if (money > maximumRechargeMoney) {
-                    return res.status(422).json({
+                    return res.status(500).json({
                         code: 1,
                         message: 'Chỉ được nạp tối đa 1 triệu/ lần',
                     })
@@ -294,11 +295,6 @@ const WalletController = {
                     //mailing -> mailing()
                     mailing(user.email, savedOtp.code)
                     global['pinCode'] = savedOtp.code
-                    return res.status(200).json({
-                        code: 0,
-                        message: 'Gửi mail xác nhận thành công',
-                        data: savedOtp.code
-                    })
                 })
                 .catch(err => {
                     return res.status(500).json({

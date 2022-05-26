@@ -8,10 +8,9 @@ function mailing(receiverMail, PIN){
   let transporter = nodemailer.createTransport({
       host: 'mail.phongdaotao.com',
       port: '25', 
-      // service: 'gmail',
       auth: {
-          user: process.env.EMAIL_FOR_SEND_NAME,
-          pass: process.env.EMAIL_FOR_SEND_PASS
+          user: 'sinhvien@phongdaotao.com',
+          pass: 'svtdtu'
       },
       tls:{
           rejectUnauthorized: false,
@@ -19,14 +18,15 @@ function mailing(receiverMail, PIN){
   })
 
   let mailOptions = {
-      from: process.env.EMAIL_FOR_SEND_NAME,
+      from: 'sinhvien@phongdaotao.com',
       to: receiverMail,
       subject: "HiFi Ebanking transfer money",
       text: ` This is your OTP code: \n
          ${PIN} \n 
         This code is only active in 1 minute`
   }
-
+  console.log(receiverMail)
+  console.log(PIN)
   transporter.sendMail(mailOptions, (err) => {
       if(err) console.log('send email failed: ', err)
       else
