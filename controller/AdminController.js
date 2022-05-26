@@ -219,7 +219,7 @@ const AdminController = {
             transferType: '2',
             status: '0'
         }
-        await TransferHistory.find(filter)
+        await TransferHistory.find(filter).sort({updatedAt: 'descending'})
         .then(transferHistories => {
             return res.status(200).json({
                 code: 0,
@@ -241,7 +241,7 @@ const AdminController = {
             transferType: '3',
             status: '0'
         }
-        await TransferHistory.find(filter)
+        await TransferHistory.find(filter).sort({updatedAt: 'descending'})
         .then(transferHistories => {
             return res.status(200).json({
                 code: 0,
@@ -259,8 +259,7 @@ const AdminController = {
 
     //DESC approve withdraw
     async approveWithdraw(req, res, next) {
-        const id = req.params.id;
-        const { isApproved } = req.body;
+        const { id, isApproved } = req.body;
         const filter = {
             _id: id
         }
@@ -282,6 +281,12 @@ const AdminController = {
                 new: true,
             })
             .then(doc => {
+                req.session.flash = {
+                    type: 'success',
+                    intro: 'Phe duyet thanh cong',
+                    message: 'Rejected a withdraw'
+                }
+
                 return res.status(200).json({
                     code: 0,
                     message: 'Phê duyệt giao dịch rút tiền thành công',
@@ -301,6 +306,12 @@ const AdminController = {
                 new: true,
             }) 
             .then(doc => {
+                req.session.flash = {
+                    type: 'success',
+                    intro: 'Phe duyet thanh cong',
+                    message: 'Approved a withdraw'
+                }
+
                 return res.status(200).json({
                     code: 0,
                     message: 'Phê duyệt giao dịch rút tiền thành công',
@@ -311,8 +322,7 @@ const AdminController = {
     },
 
     async approveTransfer(req, res, next) {
-        const id = req.params.id;
-        const { isApproved } = req.body;
+        const { id , isApproved } = req.body;
         const filter = {
             _id: id
         }
@@ -334,9 +344,14 @@ const AdminController = {
                 new: true,
             })
             .then(doc => {
+                req.session.flash = {
+                    type: 'success',
+                    intro: 'Phe duyet thanh cong',
+                    message: 'Rejected a transfer'
+                }
                 return res.status(200).json({
                     code: 0,
-                    message: 'Phê duyệt giao dịch chuyển tiền thành công',
+                    message: 'Phê duyệt thành công - Rejected',
                     data: doc
                 })
             })
@@ -353,9 +368,15 @@ const AdminController = {
                 new: true,
             }) 
             .then(doc => {
+                req.session.flash = {
+                    type: 'success',
+                    intro: 'Phe duyet thanh cong',
+                    message: 'Approved a transfer'
+                }
+
                 return res.status(200).json({
                     code: 0,
-                    message: 'Phê duyệt giao dịch chuyển tiền thành công',
+                    message: 'Phê duyệt giao thành công - Approved',
                     data: doc,
                 })
             })

@@ -28,4 +28,11 @@ router.put('/activateAccount', adminController.activateAccount)
 //24 -> 26
 router.get('/admin_transfer', middlewareController.renderAdmin, siteController.transfer)
 router.get('/admin_withdraw', middlewareController.renderAdmin, siteController.withdraw)
+
+router.get('/render_transfer', adminController.getTransferList)
+router.put('/transfer_approvement', adminController.approveTransfer)
+
+router.get('/render_withdraw', adminController.getWithdrawList)
+router.put('/withdraw_approvement', adminController.approveWithdraw)
+
 module.exports = router;
