@@ -20,7 +20,11 @@
                                     <div class="brief_info-account">
                                         <div class="brief_info-user">
                                             <p class="brief_info-user_title">Balance</p>
-                                            <span class="brief_info-user_data">3,000,000 VND</span>
+                                            <span class="brief_info-user_data">
+                                                {{#if data}}
+                                                    {{data.accountBalance}}
+                                                {{/if}}
+                                            </span>
                                         </div>
     
                                         <div>
