@@ -1084,7 +1084,7 @@ if(transfer_admin){
                           To: ${transfer.receiver}
                   </p>
                   <p class="task-describe h6">
-                      Số tiền chuyển: ${transfer.money} VNĐ.<br>
+                      Số tiền chuyển: ${convertToStr(transfer.money)} VNĐ.<br>
                       Lời nhắn: ${transfer.message}<br>
                   </p>
                   <p>
@@ -1177,7 +1177,7 @@ if(admin_withdraw){
                               To: ${withdraw.receiver}
                       </p>
                       <p class="task-describe h6">
-                          Số tiền chuyển: ${withdraw.money}<br>
+                          Số tiền chuyển: ${convertToStr(withdraw.money)} VNĐ.<br>
                           Lời nhắn: ${withdraw.message}<br>
                       </p>
                       <p>
