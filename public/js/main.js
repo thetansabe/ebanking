@@ -1064,11 +1064,223 @@ if (deactivatedPage) {
 
 }
 
+const transfer_admin = document.querySelector('#admin_transfer-content')
+if(transfer_admin){
+
+  fetch('/admin/render_transfer')
+  .then(res => res.json())
+  .then(data => {
+    if(data.code === 0){
+      const transferList = document.querySelector('#admin_transfer-list')
+      transferList.innerText = ''
+
+      data.data.forEach(transfer => {
+        transferList.innerHTML += `
+        <div class="view-task border border-3 rounded" >
+          <div class="task-detail p-2"> 
+              <span class="task-name h4">Chuyển tiền</span>
+                  <p class="task-people h5">From: <span class="task-people-name h5 font-italic">${transfer.actor}</span>
+                      <br>
+                          To: ${transfer.receiver}
+                  </p>
+                  <p class="task-describe h6">
+                      Số tiền chuyển: ${convertToStr(transfer.money)} VNĐ.<br>
+                      Lời nhắn: ${transfer.message}<br>
+                  </p>
+                  <p>
+                      Ngày giao dịch: ${changeDateDB(transfer.updatedAt)}
+                  </p>
+          </div>
+
+          <button 
+            type="button" 
+            class="container_btn--primary btn btn-outline-danger p-2" 
+            onclick = "rejectTransferModal('${transfer._id}')"
+          >
+            <i style="margin-right: 6px;" class="fa-solid fa-x"></i></i>Từ chối
+          </button>
+          
+          <button 
+            type="button" 
+            class="container_btn--primary btn btn-outline-success p-2"
+            onclick = "acceptTransferModal('${transfer._id}')" 
+          >
+            <i style="margin-right: 6px;" class="fa fa-check" aria-hidden="true"></i>Chấp thuận
+          </button>
+        </div>
+        
+        `
+      })
+    }
+  })
+}
+
+function rejectTransferModal(id){
+  const myModal = new bootstrap.Modal(document.getElementById('confirmChangeModal'), {
+    keyboard: false
+  })
+
+  myModal.show()
+
+  document.querySelector('.admin_modal-confirm_title').innerText = `Are you sure to reject this transfer`
+
+  document.querySelector('.admin_modal-confirm_btn').addEventListener('click', e => {
+    handleRejectTransfer(id)
+  })
+}
+
+function handleRejectTransfer(id){
+
+  fetch('/admin/transfer_approvement', {
+    method: 'put',
+    headers: {'Content-Type' : 'application/json'},
+    body: JSON.stringify({id, isApproved: false})
+  })
+  .then(res => res.json())
+  .then(data => {
+    if(data.code === 0) location.reload()
+  })
+
+}
+
+function acceptTransferModal(id){
+  const myModal = new bootstrap.Modal(document.getElementById('confirmChangeModal'), {
+    keyboard: false
+  })
+
+  myModal.show()
+
+  document.querySelector('.admin_modal-confirm_title').innerText = `Are you sure to approve this transfer`
+
+  document.querySelector('.admin_modal-confirm_btn').addEventListener('click', e => {
+    handleApproveTransfer(id)
+  })
+}
+
+const admin_withdraw = document.querySelector('#admin_withdraw-content')
+if(admin_withdraw){
+
+  fetch('/admin/render_withdraw')
+  .then(res => res.json())
+  .then(data => {
+    if(data.code === 0){
+      const withdrawList = document.querySelector('#admin_withdraw-list')
+      withdrawList.innerText = ''
+
+      data.data.forEach(withdraw => {
+        withdrawList.innerHTML += `
+          <div class="view-task border border-3 rounded">
+              <div class="task-detail p-2"> 
+                  <span class="task-name h4">Rút tiền</span>
+                      <p class="task-people h5">From: <span class="task-people-name h5 font-italic">${withdraw.actor}</span>
+                          <br>
+                              To: ${withdraw.receiver}
+                      </p>
+                      <p class="task-describe h6">
+                          Số tiền chuyển: ${convertToStr(withdraw.money)} VNĐ.<br>
+                          Lời nhắn: ${withdraw.message}<br>
+                      </p>
+                      <p>
+                          Ngày giao dịch: ${changeDateDB(withdraw.updatedAt)}
+                      </p>
+              </div>
+              <button 
+                type="button" 
+                class="container_btn--primary btn btn-outline-danger p-2" 
+                onclick = "rejectWithdrawModal('${withdraw._id}')"
+              >
+                <i style="margin-right: 6px;" class="fa-solid fa-x"></i></i>Từ chối
+              </button>
+
+              <button 
+                type="button" 
+                class="container_btn--primary btn btn-outline-success p-2" 
+                onclick = "approveWithdrawModal('${withdraw._id}')"
+              >
+                <i style="margin-right: 6px;" class="fa fa-check" aria-hidden="true"></i>Chấp thuận
+              </button>
+          </div>
+        `
+      })
+    }
+  })
+}
+
+function rejectWithdrawModal(id){
+  const myModal = new bootstrap.Modal(document.getElementById('confirmChangeModal'), {
+    keyboard: false
+  })
+
+  myModal.show()
+
+  document.querySelector('.admin_modal-confirm_title').innerText = `Are you sure to reject this withdraw?`
+
+  document.querySelector('.admin_modal-confirm_btn').addEventListener('click', e => {
+    handleRejectWithdraw(id)
+  })
+}
+
+function handleRejectWithdraw(id){
+
+  fetch('/admin/withdraw_approvement', {
+    method: 'put',
+    headers: {'Content-Type' : 'application/json'},
+    body: JSON.stringify({id, isApproved: false})
+  })
+  .then(res => res.json())
+  .then(data => {
+    if(data.code === 0) location.reload()
+  })
+}
+
+function approveWithdrawModal(id){
+  const myModal = new bootstrap.Modal(document.getElementById('confirmChangeModal'), {
+    keyboard: false
+  })
+
+  myModal.show()
+
+  document.querySelector('.admin_modal-confirm_title').innerText = `Are you sure to approve this withdraw?`
+
+  document.querySelector('.admin_modal-confirm_btn').addEventListener('click', e => {
+    handleApproveWithdraw(id)
+  })
+}
+
+function handleApproveWithdraw(id){
+  console.log('chua viet route + chua sua logic')
+  // fetch('/admin/withdraw_approvement', {
+  //   method: 'put',
+  //   headers: {'Content-Type' : 'application/json'},
+  //   body: JSON.stringify({id, isApproved: true})
+  // })
+  // .then(res => res.json())
+  // .then(data => {
+  //   if(data.code === 0) location.reload()
+  // })
+}
+
+//transfer_admin
+function handleApproveTransfer(id){
+  console.log('chua viet route + chua sua logic')
+  // fetch('/admin/transfer_approvement', {
+  //   method: 'put',
+  //   headers: {'Content-Type' : 'application/json'},
+  //   body: JSON.stringify({id, isApproved: true})
+  // })
+  // .then(res => res.json())
+  // .then(data => {
+  //   if(data.code === 0) location.reload()
+  // })
+
+}
+
 ///////////////////////////////////// TAN LOI //////////////////////////
 ////////////////////////TRANSFER
 const transfer = document.querySelector('.transfer_content')
 
 if(transfer){
+  let targetInfo = {}
   const searchInput = document.querySelector('.payee_box-input_holder')
   searchInput.addEventListener('input', function(e) {
     const value = e.target.value;
@@ -1082,6 +1294,7 @@ if(transfer){
         usersList.innerHTML = ``;
         if (response.code == 0) {
           response.data.forEach(user => {
+            targetInfo[user.username] = user.email
             usersList.innerHTML += `<div class="payee_box-accounts_users-wrapper" onclick="handleChooseAccount(this)">
             <div class="accounts_users-item">
             <img class = "accounts_users-item_img" src="images/avatar/unknown_male.png" alt="avatar">
@@ -1108,9 +1321,8 @@ if(transfer){
       
       document.querySelector('.transfer_box-form_input.user_id').value = user_id
     }
-    
-    let dataBodyFetch = {}
 
+    let dataBodyFetch = {}
     //pop up transfer modal
     function handleTransfer(){
       const user_id = document.querySelector('.transfer_box-form_input.user_id').value
@@ -1163,18 +1375,50 @@ if(transfer){
       }
       
     }
-
+    
     //handle confirm transfer
     function confirmedTransfer(){
 
       //check xem PIN dung chua
 
       //fetch api
-      const chargedAccount = document.querySelector('input[name="fee_payer"]:checked').value
+      const errMsg = document.querySelector('.transfer_box-invalid_otp')
+      const PIN = document.querySelector('.transfer_input-PIN').value;
 
-      dataBodyFetch = {...dataBodyFetch, chargedAccount}
-
-      console.log('xu li confirm transfer', dataBodyFetch)
+      if (!PIN) {
+        errMsg.innerText = 'Thiếu thông tin mã OTP'
+      }
+      else {
+        const isActor = document.querySelector('input[name="fee_payer"]:checked').value == 'you'
+        const message = document.querySelector('#transfer_msg').value
+        let money = document.querySelector('.transfer_box-form_input.money_amount').value
+        money = money.split(' ')[0]
+        money = money.replaceAll(',', '')
+        let username = document.querySelector('.transfer_box-form_input.user_id').value
+        username = username.replaceAll(
+          '#', ''
+          )
+        const email = targetInfo[username]
+        dataBodyFetch = {
+          ...dataBodyFetch,
+          otpCode: PIN,
+          receiverEmail: email,
+          money: parseInt(money),
+          message,
+          isActor
+        }
+        fetch('http://localhost:3000/wallet/transferwithpin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(dataBodyFetch)
+        })
+        .then(res => res.json())
+        .then(response => {
+          console.log(response)
+        })
+      }
     }
 }
 

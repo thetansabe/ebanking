@@ -10,6 +10,7 @@ const mailing = require('../helpers/transfer')
 const PhoneCard = require('../model/PhoneCard');
 const jwt = require('jsonwebtoken')
 const withdrawHandler = require('../helpers/withdrawHandler')
+const transferHandler = require('../helpers/transferHandler')
 const nodemailer = require('nodemailer');
 const global = {
     pinCode: 0,
@@ -229,11 +230,16 @@ const WalletController = {
                 data['status'] = '0'; // pending
                 const transferHistory = new TransferHistory(data)
                 await transferHistory.save()
-                .then(savedTransferHistory => {
-                    return res.status(200).json({
-                        code: 0,
-                        message: 'Giao dịch rút tiền đang đợi admin duyệt',
-                        data: savedTransferHistory
+                .then(async savedTransferHistory => {
+                    await Wallet.findOne({
+                        userId: actorId,
+                    })
+                    .then((wallet) => {
+                        return res.status(200).json({
+                            code: 0,
+                            message: 'Giao dịch rút tiền đang đợi admin duyệt',
+                            data: wallet 
+                        })
                     })
                 })
                 .catch(err => {
@@ -295,6 +301,10 @@ const WalletController = {
                     //mailing -> mailing()
                     mailing(user.email, savedOtp.code)
                     global['pinCode'] = savedOtp.code
+                    return res.status(200).json({
+                        code: 0,
+                        message: 'Gửi mail xác nhận thành công',
+                    })
                 })
                 .catch(err => {
                     return res.status(500).json({
@@ -320,8 +330,14 @@ const WalletController = {
     },
 
     async checkPin(req, res) {
-        const { otpCode, actorId, receiverId, phonenumber, email, money, message, isActor } = req.body;
-        
+        const { otpCode, actor, receiverEmail, money, message, isActor } = req.body;
+        let actorId = undefined;
+
+        jwt.verify(actor, process.env.SECRET_JWT_ACCESS_KEY, (err, decoded) => {
+            actorId = decoded.id
+        })
+        console.log(otpCode)
+        console.log(global['pinCode'])
         if (otpCode != global['pinCode']) {
             return res.status(404).json({
                 code: 1,
@@ -344,9 +360,12 @@ const WalletController = {
         const transactionFee = rate * money;
 
         const maximumMoney = 5000000;
+        const receiver = await Account.findOne({
+            email: receiverEmail
+        })
         const data = {
             actor: actorId,
-            receiver: receiverId,
+            receiver: receiver._id,
             icon: '<i class="fa-light fa-comments-dollar"></i>',
             transferType: '3',
             money: money,

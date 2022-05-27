@@ -7,13 +7,14 @@
                                 <div class="brief-wrapper">
                                     <div class="brief-upper">
                                         <div class="brief_info-user">
-                                            <p class="brief_info-user_title">Account Number</p>
-                                            <span class="brief_info-user_data">12345678</span>
-                                        </div>
-    
-                                        <div class="brief_info-user">
                                             <p class="brief_info-user_title">Account Type</p>
-                                            <span class="brief_info-user_data">Default</span>
+                                            <span class="brief_info-user_data">
+                                                {{#if user}}
+                                                    {{user.acc_info}}
+                                                {{else}}
+                                                    Default
+                                                {{/if}}
+                                            </span>
                                         </div>
                                     </div>
     
@@ -22,7 +23,9 @@
                                             <p class="brief_info-user_title">Balance</p>
                                             <span class="brief_info-user_data">
                                                 {{#if data}}
-                                                    {{data.accountBalance}}
+                                                    {{data.accountBalance}} VND
+                                                {{else}}
+                                                    0 VND
                                                 {{/if}}
                                             </span>
                                         </div>

@@ -9,7 +9,7 @@ const middlewareController = require('../controller/MiddlewareController')
 router.post('/recharge', rechargeValidator, walletController.recharge);
 router.post('/withdraw', withdrawValidator, walletController.withdraw);
 router.post('/transfer', transferValidator, walletController.transfer);
-router.get('/transfer/:PIN', walletController.checkPin)
+router.post('/transferwithpin', walletController.checkPin)
 router.post('/purchasePhoneCard', walletController.purchasePhoneCard)
 router.post('/add', walletController.addPhoneCard);
 router.post('/addOTP', walletController.createOTP)

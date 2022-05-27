@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const Wallet = require('../model/Wallet')
+const Account = require('../model/Account')
 const TransferHistory = require('../model/TransferHistory')
 const jwt = require('jsonwebtoken')
 
@@ -18,11 +19,14 @@ router.get('/', middlewareController.renderUnAuth, async function(req, res, next
     userId: actorId,
   }
   await Wallet.findOne(filter)
-  .then(userWallet => {
-    console.log(userWallet)
-    return res.render('dashboard', {
-      data: userWallet
-    });
+  .then(async userWallet => {
+    await Account.findOne(filter)
+    .then(acc => {
+      return res.render('dashboard', {
+        data: userWallet,
+        user: acc,
+      });
+    })
   })
 });
 
@@ -62,7 +66,15 @@ router.get('/deposit_withdraw', middlewareController.renderUnAuth, async (req, r
       $gte: `${yyyy}-${mm}-${dd}`,
       $lte: `${tyyyy}-${tmm}-${tdd}`
     },
-    transferType: '2'
+    transferType: '2',
+    $or: [
+      {
+        status: '1',
+      },
+      {
+        status: '0'
+      }
+    ]
   }
   await TransferHistory.find(filter)
   .then(async data => {
