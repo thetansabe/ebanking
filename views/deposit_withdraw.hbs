@@ -2,7 +2,13 @@
     <div class="dep_with-row row">
         <div class="col-md-6 col-sm-12">
             <div class="deposit_form-wrapper deposit_form-balance_box">
-                <h6 class="balance_box-title">Balance: <span class="balance_box-amount">{{data.accountBalance}}</span></h6>
+                <h6 class="balance_box-title">Balance: <span class="balance_box-amount">
+                    {{#if data}}
+                        {{data.accountBalance}} VND
+                    {{else}}
+                        0 VND
+                    {{/if}}
+                </span></h6>
             </div>
             <div class="deposit_form-wrapper">
                 <h5 class="deposit_wrapper-title">DEPOSIT</h5>

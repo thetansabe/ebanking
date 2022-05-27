@@ -6,11 +6,10 @@ const createRandomOTP = require('./createRandomOTP')
 
 function mailing(receiverMail, PIN){
   let transporter = nodemailer.createTransport({
-      host: 'mail.phongdaotao.com',
-      port: '25', 
+      service: 'gmail',
       auth: {
-          user: 'sinhvien@phongdaotao.com',
-          pass: 'svtdtu'
+          user: 'dummymailforebanking@gmail.com',
+          pass: 'thisisadumbmail234'
       },
       tls:{
           rejectUnauthorized: false,
@@ -18,7 +17,7 @@ function mailing(receiverMail, PIN){
   })
 
   let mailOptions = {
-      from: 'sinhvien@phongdaotao.com',
+      from: 'dummymailforebanking@gmail.com',
       to: receiverMail,
       subject: "HiFi Ebanking transfer money",
       text: ` This is your OTP code: \n

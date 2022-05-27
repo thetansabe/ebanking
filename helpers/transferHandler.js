@@ -12,10 +12,9 @@ async function transferHandler(savedTransferHistory) {
     
     const actorWallet = await Wallet.findOne(filterForActor);
     const receiverWallet = await Wallet.findOne(filterForReceiver)
-
     
-    const accountBalanceOfActor = 0;
-    const accountBalanceOfReceiver = 0;
+    let accountBalanceOfActor = 0;
+    let accountBalanceOfReceiver = 0;
 
     if (actorWallet) accountBalanceOfActor = actorWallet.accountBalance;
     if (receiverWallet) accountBalanceOfReceiver = receiverWallet.accountBalance;
