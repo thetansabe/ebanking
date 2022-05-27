@@ -1280,6 +1280,7 @@ function handleApproveTransfer(id){
 const transfer = document.querySelector('.transfer_content')
 
 if(transfer){
+  let targetInfo = {}
   const searchInput = document.querySelector('.payee_box-input_holder')
   searchInput.addEventListener('input', function(e) {
     const value = e.target.value;
@@ -1293,6 +1294,7 @@ if(transfer){
         usersList.innerHTML = ``;
         if (response.code == 0) {
           response.data.forEach(user => {
+            targetInfo[user.username] = user.email
             usersList.innerHTML += `<div class="payee_box-accounts_users-wrapper" onclick="handleChooseAccount(this)">
             <div class="accounts_users-item">
             <img class = "accounts_users-item_img" src="images/avatar/unknown_male.png" alt="avatar">
@@ -1319,9 +1321,8 @@ if(transfer){
       
       document.querySelector('.transfer_box-form_input.user_id').value = user_id
     }
-    
-    let dataBodyFetch = {}
 
+    let dataBodyFetch = {}
     //pop up transfer modal
     function handleTransfer(){
       const user_id = document.querySelector('.transfer_box-form_input.user_id').value
@@ -1374,18 +1375,50 @@ if(transfer){
       }
       
     }
-
+    
     //handle confirm transfer
     function confirmedTransfer(){
 
       //check xem PIN dung chua
 
       //fetch api
-      const chargedAccount = document.querySelector('input[name="fee_payer"]:checked').value
+      const errMsg = document.querySelector('.transfer_box-invalid_otp')
+      const PIN = document.querySelector('.transfer_input-PIN').value;
 
-      dataBodyFetch = {...dataBodyFetch, chargedAccount}
-
-      console.log('xu li confirm transfer', dataBodyFetch)
+      if (!PIN) {
+        errMsg.innerText = 'Thiếu thông tin mã OTP'
+      }
+      else {
+        const isActor = document.querySelector('input[name="fee_payer"]:checked').value == 'you'
+        const message = document.querySelector('#transfer_msg').value
+        let money = document.querySelector('.transfer_box-form_input.money_amount').value
+        money = money.split(' ')[0]
+        money = money.replaceAll(',', '')
+        let username = document.querySelector('.transfer_box-form_input.user_id').value
+        username = username.replaceAll(
+          '#', ''
+          )
+        const email = targetInfo[username]
+        dataBodyFetch = {
+          ...dataBodyFetch,
+          otpCode: PIN,
+          receiverEmail: email,
+          money: parseInt(money),
+          message,
+          isActor
+        }
+        fetch('http://localhost:3000/wallet/transferwithpin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(dataBodyFetch)
+        })
+        .then(res => res.json())
+        .then(response => {
+          console.log(response)
+        })
+      }
     }
 }
 
