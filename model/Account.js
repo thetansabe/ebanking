@@ -19,7 +19,15 @@ const userSchema = new mongoose.Schema({
     birth: Date,
     address: String,
     id_front: String,
-    id_back: String
+    id_back: String,
+    wrongPassCount: {
+        type: Number,
+        default: 0
+    },
+    irregularLogin: {
+        type: Number,
+        default: 0
+    }
 },{
     timestamps: true,
 })

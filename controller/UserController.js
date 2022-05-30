@@ -5,6 +5,9 @@ const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv').config({path: './.env'})
 const changePassword = require('../helpers/changePassword.js')
 const userInfo = require('../helpers/userInfo')
+const TransferHistory = require('../model/TransferHistory')
+const Account = require('../model/Account')
+const Announce = require('../model/Announce')
 
 //temporary refresh token db
 let refreshTokensList = []
@@ -32,6 +35,7 @@ const UserController = {
 
     login : (req,res) => {
         const resObj = login.userLogin(req.body.username, req.body.password)
+        // console.log(resObj)
         resObj.then(result => {
             if(result.code === 0){
                 const {refreshToken, ...others} = result
@@ -191,6 +195,41 @@ const UserController = {
         }
         return res.json(responseMsg)
     },
+
+    getHistories(req, res, next) {
+        const userId = req.user.id;
+        const filter = {
+            $or: [
+                {
+                    actor: userId,
+                },
+                {
+                    receiver: userId,
+                    status: '1'
+                }
+              ]
+        }
+        TransferHistory.find(filter).sort({
+            updatedAt: 'descending'
+        })
+        .then(async histories => {
+            await Announce.find({
+                userId: userId
+            })
+            .sort({
+                updated: 'descending'
+            })
+            .limit(5)
+            .then(anns => {
+                res.status(200).json({
+                    code: 0,
+                    message: 'Đọc lịch sử giao dịch thành công',
+                    data: histories,
+                    announces: anns,
+                })
+            })
+        })
+    }
 
     // resetPassword: async (req, res) => {
     //     const PIN = req.body.PIN

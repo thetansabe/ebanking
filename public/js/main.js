@@ -227,8 +227,144 @@ function convertToStr(number){
 ///////////////////////DASHBOARD
 const dashboard = document.querySelector('.content_index')
 if(dashboard){
-  function viewTransferDetailInfo(){
-    $('#transferDetail').modal('show')
+  const authToken = `Bearer ${localStorage.getItem('accessToken')}`
+  fetch('http://localhost:3000/users/histories', {
+    headers: {
+      'Authorization' : authToken,
+      'Content-Type' : 'application/json'
+    },
+  })
+  .then(res => res.json())
+  .then(response => {
+    const announcement = document.querySelector('.notifications-list.list-group.list-group-flush')
+    announcement.innerHTML = ``
+    const left = document.querySelector('.dashboard_history-left')
+    const middle = document.querySelector('.dashboard_history-middle')
+    const right = document.querySelector('.dashboard_history-right')
+    left.innerHTML = `<h5 class="dashboard_history-title">Payment History</h5>`
+    middle.innerHTML = `<div class="right_attribute-date">Date</div>`
+    right.innerHTML = `<div class="right_attribute-debit">Debit</div>`
+    if (response.code === 0) {
+      response.data.forEach(history => {
+        left.innerHTML += `
+        <div class="transfer-source brief_box" onclick="viewTransferDetailInfo('${history._id}')">
+                <div class="transfer-source_avatar-box">
+                    <img src="/images/avatar/unknown_male.png" class="transfer-source-avatar" alt="avatar">
+                </div>
+
+            <div class="transfer-source_brief-box">
+                <div class="transfer-source-name">
+                  ${history.from}
+                </div>
+            </div>
+        </div>`
+        middle.innerHTML += `<div class="transfer-source">
+        <div class="transfer-source-date">
+          ${new Date(history.occurTime).toLocaleDateString("en-US")}
+        </div>
+        </div>`
+        right.innerHTML += `<div class="transfer-source">
+        <div class="transfer-source-debit receive">
+          ${history.money.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}
+        </div>
+        </div>`
+      })
+      response.announces.forEach(ann => {
+        announcement.innerHTML += `<li class="notifications-item list-group-item">
+        ${ann.message}
+        </li>`
+      })
+    }
+  })
+  const balance = document.querySelector('.brief_info-user_data.balance')
+  const value = parseInt(balance.innerText).toLocaleString('it-IT', {style : 'currency', currency : 'VND'});
+  balance.innerText = value
+  function viewTransferDetailInfo(id){
+    fetch('http://localhost:3000/users/histories', {
+      headers: {
+        'Authorization' : authToken,
+        'Content-Type' : 'application/json'
+      },
+    })
+    .then(res => res.json())
+    .then(response => {
+      if (response.code == 0) {
+        response.data.forEach(history => {
+          if (history._id == id) {
+            let type = ``
+            let bgColor = ``
+            let stt = ``
+            switch (history.status) {
+              case '-1':
+                stt = `Rejected`
+                bgColor = `red`
+                break;
+              case '0': 
+                stt = 'Pending'
+                bgColor = 'yellow'
+                break
+              case '1':
+                stt = 'Fulfilled'
+                bgColor = 'green'
+                break
+              default:
+                break;
+            }
+            switch(history.transferType) {
+              case '1': 
+                type = `${history.icon} Recharge`
+                break;
+              case '2': 
+                type = `Withdraw`
+                break;
+              case '3': 
+                type = `Transfer`
+                break;
+              case '4':
+                type = `<span onclick='detailsCards(${JSON.stringify(history.phoneCardNumber)})'>Purchase phone cards (click for details)</span>`
+                break;
+              default:
+                type = 'Can not determine'
+                break;
+            }
+            const modal = document.querySelector('#transferDetail')
+            const actor = modal.querySelector('.detail_box-value.username')
+            const transferType = modal.querySelector('.detail_box-value.transferType')
+            const status = modal.querySelector('.detail_box-value.status')
+            const amount = modal.querySelector('.detail_box-value.amount')
+            const occur = modal.querySelector('.detail_box-value.occur')
+            const fee = modal.querySelector('.detail_box-value.fee')
+            const message = modal.querySelector('.detail_box-value.message')
+            actor.innerText = history.from;
+            transferType.innerHTML = type
+            status.innerText = stt;
+            status.style.backgroundColor = bgColor
+            amount.innerText = history.money.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})
+            occur.innerText = new Date(history.occurTime).toLocaleDateString('en-US')
+            fee.innerText = history.transactionFee.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})
+            message.innerText = history.message;
+
+            if (history.transferType == '4') {
+              transferType.style.cursor = 'pointer'
+            }
+
+            $('#transferDetail').modal('show')
+          }
+        })
+      }
+    })
+  }
+
+  function detailsCards(cards) {
+    const phoneCards = document.querySelector('.dashboard_purchase_success-box')
+    phoneCards.innerHTML = ``
+    let internetService = cards[0].substring(0, 5)
+    internetService = (internetService == '11111') ? 'Viettel' : (internetService == '22222' ? 'Mobifone' : 'Vinaphone')
+    cards.forEach(card => {
+      phoneCards.innerHTML += `<h6 class="purchase_success-box_title">${card} - ${internetService}</h6>`
+    })
+    $('#transferDetail').modal('hide')
+    $('#dashboard_card_detail').modal('show')
   }
 }
 
@@ -1248,30 +1384,30 @@ function approveWithdrawModal(id){
 }
 
 function handleApproveWithdraw(id){
-  console.log('chua viet route + chua sua logic')
-  // fetch('/admin/withdraw_approvement', {
-  //   method: 'put',
-  //   headers: {'Content-Type' : 'application/json'},
-  //   body: JSON.stringify({id, isApproved: true})
-  // })
-  // .then(res => res.json())
-  // .then(data => {
-  //   if(data.code === 0) location.reload()
-  // })
+  fetch('/admin/withdraw_approvement', {
+    method: 'put',
+    headers: {'Content-Type' : 'application/json'},
+    body: JSON.stringify({id, isApproved: true})
+  })
+  .then(res => res.json())
+  .then(response => {
+    if (response.code === 0) {
+      location.reload()
+    }
+  })
 }
 
 //transfer_admin
 function handleApproveTransfer(id){
-  console.log('chua viet route + chua sua logic')
-  // fetch('/admin/transfer_approvement', {
-  //   method: 'put',
-  //   headers: {'Content-Type' : 'application/json'},
-  //   body: JSON.stringify({id, isApproved: true})
-  // })
-  // .then(res => res.json())
-  // .then(data => {
-  //   if(data.code === 0) location.reload()
-  // })
+  fetch('/admin/transfer_approvement', {
+    method: 'put',
+    headers: {'Content-Type' : 'application/json'},
+    body: JSON.stringify({id, isApproved: true})
+  })
+  .then(res => res.json())
+  .then(data => {
+    if(data.code === 0) location.reload()
+  })
 
 }
 
@@ -1280,6 +1416,10 @@ function handleApproveTransfer(id){
 const transfer = document.querySelector('.transfer_content')
 
 if(transfer){
+  const userBalanceUi = document.querySelector('.form_balance-amount.balance')
+  const userBalanceValue = parseInt(userBalanceUi.innerText).toLocaleString('it-IT', {style : 'currency', currency : 'VND'});
+  userBalanceUi.innerText = userBalanceValue
+
   let targetInfo = {}
   const searchInput = document.querySelector('.payee_box-input_holder')
   searchInput.addEventListener('input', function(e) {
@@ -1313,6 +1453,8 @@ if(transfer){
       const searchInput = document.querySelector('.payee_box-input_holder')
 
       searchInput.value = ''
+      const usersList = document.querySelector('.payee_box-accounts_users')
+      usersList.innerHTML = ``
     }
 
     //choose account -> render id
@@ -1416,7 +1558,39 @@ if(transfer){
         })
         .then(res => res.json())
         .then(response => {
-          console.log(response)
+          if (response.code == 0) {
+            console.log(response)
+            let balance = response.data.accountBalance;
+            balance = balance.toLocaleString('it-IT', {style : 'currency', currency : 'VND'});
+  
+            const toastMessage = document.querySelector('#toastMessage');
+            const action = toastMessage.querySelector('#toast_message-action')
+            const result = toastMessage.querySelector('#toast_message-result')
+            action.innerText = 'Transfer:';
+            result.innerText = `${response.message}. Ví điện tử của quý khách hiện đang có ${balance}`
+            toastMessage.classList.remove('alert-danger')
+            toastMessage.classList.add('alert-success')
+            toastMessage.classList.add('show')
+            setTimeout(function() {
+              toastMessage.classList.remove('show')
+            }, 10000)
+            document.querySelector('.form_balance-amount.balance').textContent = balance
+            $('#transferModal').modal('hide')
+          }
+          else {
+            const toastMessage = document.querySelector('#toastMessage');
+            const action = toastMessage.querySelector('#toast_message-action')
+            const result = toastMessage.querySelector('#toast_message-result')
+            action.innerText = 'Transfer:';
+            result.innerText = `${response.message}`
+            toastMessage.classList.remove('alert-success')
+            toastMessage.classList.add('alert-danger')
+            toastMessage.classList.add('show')
+            setTimeout(function() {
+              toastMessage.classList.remove('show')
+            }, 10000)
+            $('#transferModal').modal('hide')
+          }
         })
       }
     }
@@ -1570,17 +1744,29 @@ if(buy_cards){
     })
     .then(res => res.json())
     .then(response => {
-      console.log(response)
+      $('#exampleModalCenter').modal('hide')
       if (response.code === 0) {
         const phoneCards = document.querySelector('.purchase_success-box')
         phoneCards.innerHTML = ``
         response.cards.forEach(card => {
           phoneCards.innerHTML += `<h6 class="purchase_success-box_title">${card} - ${response.internetService}</h6>`
         })
+        $('#manap').modal('show')
       }
-      $('#exampleModalCenter').modal('hide')
+      else {
+        const toastMessage = document.querySelector('#toastMessage');
+        const action = toastMessage.querySelector('#toast_message-action')
+        const result = toastMessage.querySelector('#toast_message-result')
+        action.innerText = 'Purchase phone cards:';
+        result.innerText = `${response.message}`
+        toastMessage.classList.remove('alert-success')
+        toastMessage.classList.add('alert-danger')
+        toastMessage.classList.add('show')
+        setTimeout(function() {
+          toastMessage.classList.remove('show')
+        }, 10000)
+      }
     })
-    $('#manap').modal('show')
     
   }
 }
@@ -1588,7 +1774,9 @@ if(buy_cards){
 ///////////////DEPOSIT_WITHDRAW/////////
 const dep_with = document.querySelector('.dep_with-content')
 if(dep_with){
-
+  const userBalanceUi = document.querySelector('.balance_box-amount')
+  const userBalanceValue = parseInt(userBalanceUi.innerText).toLocaleString('it-IT', {style : 'currency', currency : 'VND'});;
+  userBalanceUi.innerText = userBalanceValue
   function validateCashIn(cardNo, cvv, dateExp, amount){
     let errs = []
     cardNo = cardNo.toString()
@@ -1696,7 +1884,7 @@ if(dep_with){
           toastMessage.classList.add('show')
           setTimeout(function() {
             toastMessage.classList.remove('show')
-          }, 5000)
+          }, 10000)
           document.querySelector('.balance_box-amount').textContent = balance
         }
         else {
@@ -1710,7 +1898,7 @@ if(dep_with){
           toastMessage.classList.add('show')
           setTimeout(function() {
             toastMessage.classList.remove('show')
-          }, 5000)
+          }, 10000)
         }
       })
     }
@@ -1807,7 +1995,7 @@ if(dep_with){
             toastMessage.classList.add('show')
             setTimeout(function() {
               toastMessage.classList.remove('show')
-            }, 5000)
+            }, 10000)
             document.querySelector('.balance_box-amount').textContent = balance
             let withdrawCount = document.querySelector('.withdraw_inform-count')
             withdrawCount.textContent = parseInt(withdrawCount.textContent) + 1
@@ -1823,7 +2011,7 @@ if(dep_with){
             toastMessage.classList.add('show')
             setTimeout(function() {
               toastMessage.classList.remove('show')
-            }, 5000)
+            }, 10000)
           }
         })
       }

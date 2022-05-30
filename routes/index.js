@@ -15,11 +15,14 @@ router.get('/', middlewareController.renderUnAuth, async function(req, res, next
   jwt.verify(actor, process.env.SECRET_JWT_REFRESH_KEY, (err, decoded) => {
     actorId = decoded.id
   })
-  const filter = {
+  let filter = {
     userId: actorId,
   }
   await Wallet.findOne(filter)
   .then(async userWallet => {
+    filter = {
+      _id: actorId
+    }
     await Account.findOne(filter)
     .then(acc => {
       return res.render('dashboard', {
@@ -34,12 +37,45 @@ router.get('/profile', middlewareController.renderUnAuth, function(req, res, nex
   res.render('profile');
 });
 
-router.get('/transfer', middlewareController.renderUnAuth, (req, res) => {
-  res.render('transfer')
+router.get('/transfer', middlewareController.renderUnAuth, async (req, res) => {
+  const actor = req.cookies.refreshToken;
+  let actorId = undefined;
+  jwt.verify(actor, process.env.SECRET_JWT_REFRESH_KEY, (err, decoded) => {
+    actorId = decoded.id
+  })
+  let filter = {
+    userId: actorId,
+  }
+  await Wallet.findOne(filter)
+  .then(async userWallet => {
+    filter = {
+      _id: actorId,
+    }
+    await Account.findOne(filter)
+    .then(acc => {
+      return res.render('transfer', {
+        data: userWallet,
+        user: acc,
+      });
+    })
+  })
 })
 
-router.get('/buy_cards', middlewareController.renderUnAuth, (req, res) => {
-  res.render('buy_cards')
+router.get('/buy_cards', middlewareController.renderUnAuth, async (req, res) => {
+  const actor = req.cookies.refreshToken;
+  let actorId = undefined;
+  jwt.verify(actor, process.env.SECRET_JWT_REFRESH_KEY, (err, decoded) => {
+    actorId = decoded.id
+  })
+  let filter = {
+    _id: actorId,
+  }
+  await Account.findOne(filter)
+  .then(acc => {
+    res.render('buy_cards', {
+      data: acc
+    })
+  })
 })
 
 router.get('/deposit_withdraw', middlewareController.renderUnAuth, async (req, res) => {

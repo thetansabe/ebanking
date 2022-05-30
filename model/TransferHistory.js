@@ -10,6 +10,12 @@ const TransferHistorySchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Account'
     },
+    from: {
+        type: String,
+    },
+    to: {
+        type: String,
+    },
     icon: {
         type: String,
         required: true

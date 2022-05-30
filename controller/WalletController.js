@@ -3,10 +3,11 @@ const CreditCard = require('../model/CreditCard');
 const TransferHistory = require('../model/TransferHistory');
 const Wallet = require('../model/Wallet');
 const OTP = require('../model/OTP');
+const Announce = require('../model/Announce');
 const createRandomOTP = require('../helpers/createRandomOTP')
 const createRandomCard = require('../helpers/createRandomCard')
 const Account = require('../model/Account');
-const mailing = require('../helpers/transfer')
+const {mailing} = require('../helpers/transfer')
 const PhoneCard = require('../model/PhoneCard');
 const jwt = require('jsonwebtoken')
 const withdrawHandler = require('../helpers/withdrawHandler')
@@ -123,32 +124,40 @@ const WalletController = {
             .then(async savedWallet => {
                 //credit card object id
                 const creditCardObjectId = validCreditCard._id;
-                const transferHistory = new TransferHistory({
-                    actor: actorId,
-                    receiver: actorId,
-                    icon: '<i class="fa-light fa-money-bill-transfer"></i>',
-                    transferType: '1', // recharge
-                    money: money,
-                    occurTime: Date.now(),
-                    status: '1', // full fill 
-                    transactionFee: 0, //recharge did not have transaction fee
-                    message: '',//recharge did not have message
-                    phoneCardNumber: [], // empty array = didn't buy phone card
-                    creditCardNumber: creditCardObjectId
-                })
-                await transferHistory.save()
-                .then(()=> {
-                    return res.status(200).json({
-                        code: 0,
-                        message: 'Nạp tiền vào tài khoản thành công',
-                        data: savedWallet,
+                filter = {
+                    _id: actorId
+                }
+                await Account.findOne(filter)
+                .then(async acc => {
+                    const transferHistory = new TransferHistory({
+                        actor: actorId,
+                        receiver: actorId,
+                        from: acc.hoten, 
+                        to: acc.hoten,
+                        icon: '<i class="fas fa-money-bill"></i>',
+                        transferType: '1', // recharge
+                        money: money,
+                        occurTime: Date.now(),
+                        status: '1', // full fill 
+                        transactionFee: 0, //recharge did not have transaction fee
+                        message: '',//recharge did not have message
+                        phoneCardNumber: [], // empty array = didn't buy phone card
+                        creditCardNumber: creditCardObjectId
                     })
-                })
-            })
-            .catch(err => {
-                return res.status(500).json({
-                    code: 1,
-                    message: 'Nạp tiền vào tài khoản thất bại',
+                    await transferHistory.save()
+                    .then(()=> {
+                        return res.status(200).json({
+                            code: 0,
+                            message: 'Nạp tiền vào tài khoản thành công',
+                            data: savedWallet,
+                        })
+                    })
+                    .catch(err => {
+                        return res.status(500).json({
+                            code: 1,
+                            message: 'Nạp tiền vào tài khoản thất bại',
+                        })
+                    })
                 })
             })
         }
@@ -183,7 +192,6 @@ const WalletController = {
             const { creditCardNumber, expirationDate, cvvCode, message, money, actor } = withdrawData;
             let actorId = undefined;
             jwt.verify(actor, process.env.SECRET_JWT_ACCESS_KEY, function(err, decoded) {
-                console.log(decoded)
                 actorId = decoded.id
             });
             const validCreditCard = '111111';
@@ -193,73 +201,92 @@ const WalletController = {
                     message: 'Thẻ này không được hỗ trợ để rút tiền'
                 })
             }
-            const minimumWithdrawMoney = 50000;
-            if (money % minimumWithdrawMoney !== 0) {
-                const errMessage = `Số tiền rút phải là bội số của ${minimumWithdrawMoney.toLocaleString('vi', {
-                    style: 'currency',
-                    currency: 'VND'
-                })} đồng`;
 
-                return res.status(403).json({
+            let anotherFilter = {
+                userId: actorId
+            }
+
+            const userWallet = await Wallet.findOne(anotherFilter)
+            if (!userWallet || userWallet && userWallet.accountBalance < money) {
+                return res.status(404).json({
                     code: 1,
-                    message: errMessage
-                })
-            }
-            const rate = 0.05;
-            const transactionFee = rate * money; // transaction fee = 5% of withdraw money
-            const filter = {
-                creditCardNumber: creditCardNumber
-            }
-            const creditCardObject = await CreditCard.findOne(filter)
-            const data = {
-                actor: actorId,
-                receiver: actorId,
-                icon: '<i class="fa-solid fa-money-bill-transfer"></i>',
-                transferType: '2', //withdraw
-                money: money,
-                occurTime: Date.now(),
-                transactionFee: transactionFee,
-                message: message,
-                phoneCardNumber: [],
-                creditCardNumber: creditCardObject._id
-            }
-            const maximumWithdrawMoney = 5000000;
-
-            //need admin acceptance
-            if (money > maximumWithdrawMoney) {
-                data['status'] = '0'; // pending
-                const transferHistory = new TransferHistory(data)
-                await transferHistory.save()
-                .then(async savedTransferHistory => {
-                    await Wallet.findOne({
-                        userId: actorId,
-                    })
-                    .then((wallet) => {
-                        return res.status(200).json({
-                            code: 0,
-                            message: 'Giao dịch rút tiền đang đợi admin duyệt',
-                            data: wallet 
-                        })
-                    })
-                })
-                .catch(err => {
-                    return res.status(500).json({
-                        code: 1,
-                        message: 'Giao dịch rút tiền thất bại'
-                    })
+                    message: 'Số dư trong ví của quý khách không đủ để thực hiện giao dịch'
                 })
             }
             else {
-                data['status'] = '1';
-                const transferHistory = new TransferHistory(data)
-                await transferHistory.save()
-                .then(async savedTransferHistory => {
-                    const result = await withdrawHandler(savedTransferHistory)
-                    if (result.code === 0) {
-                        return res.status(200).json(result)
-                    }
-                    return res.status(200).json(result)
+                const minimumWithdrawMoney = 50000;
+                if (money % minimumWithdrawMoney !== 0) {
+                    const errMessage = `Số tiền rút phải là bội số của ${minimumWithdrawMoney.toLocaleString('vi', {
+                        style: 'currency',
+                        currency: 'VND'
+                    })} đồng`;
+
+                    return res.status(403).json({
+                        code: 1,
+                        message: errMessage
+                    })
+                }
+                const rate = 0.05;
+                const transactionFee = rate * money; // transaction fee = 5% of withdraw money
+                const filter = {
+                    creditCardNumber: creditCardNumber
+                }
+                const creditCardObject = await CreditCard.findOne(filter)
+                const withdrawActor = await Account.findOne({
+                    _id: actorId
                 })
+                const data = {
+                    actor: actorId,
+                    receiver: actorId,
+                    from: withdrawActor.hoten,
+                    to: withdrawActor.hoten,
+                    icon: '<i class="far fa-money-bill"></i>',
+                    transferType: '2', //withdraw
+                    money: money,
+                    occurTime: Date.now(),
+                    transactionFee: transactionFee,
+                    message: message,
+                    phoneCardNumber: [],
+                    creditCardNumber: creditCardObject._id
+                }
+                const maximumWithdrawMoney = 5000000;
+
+                //need admin acceptance
+                if (money > maximumWithdrawMoney) {
+                    data['status'] = '0'; // pending
+                    const transferHistory = new TransferHistory(data)
+                    await transferHistory.save()
+                    .then(async savedTransferHistory => {
+                        await Wallet.findOne({
+                            userId: actorId,
+                        })
+                        .then((wallet) => {
+                            return res.status(200).json({
+                                code: 0,
+                                message: 'Giao dịch rút tiền đang đợi admin duyệt',
+                                data: wallet 
+                            })
+                        })
+                    })
+                    .catch(err => {
+                        return res.status(500).json({
+                            code: 1,
+                            message: 'Giao dịch rút tiền thất bại'
+                        })
+                    })
+                }
+                else {
+                    data['status'] = '1';
+                    const transferHistory = new TransferHistory(data)
+                    await transferHistory.save()
+                    .then(async savedTransferHistory => {
+                        const result = await withdrawHandler(savedTransferHistory)
+                        if (result.code === 0) {
+                            return res.status(200).json(result)
+                        }
+                        return res.status(200).json(result)
+                    })
+                }
             }
         }
         else {
@@ -285,7 +312,6 @@ const WalletController = {
             jwt.verify(actor, process.env.SECRET_JWT_ACCESS_KEY, (err, decoded) => {
                 actorId = decoded.id
             })
-            console.log(actorId)
             const filter = {
                 _id: actorId
             }
@@ -336,8 +362,6 @@ const WalletController = {
         jwt.verify(actor, process.env.SECRET_JWT_ACCESS_KEY, (err, decoded) => {
             actorId = decoded.id
         })
-        console.log(otpCode)
-        console.log(global['pinCode'])
         if (otpCode != global['pinCode']) {
             return res.status(404).json({
                 code: 1,
@@ -355,57 +379,95 @@ const WalletController = {
                 message: 'Mã OTP đã hết hiệu lực'
             })
         }
-        
-        const rate = 0.05;
-        const transactionFee = rate * money;
-
-        const maximumMoney = 5000000;
-        const receiver = await Account.findOne({
-            email: receiverEmail
-        })
-        const data = {
-            actor: actorId,
-            receiver: receiver._id,
-            icon: '<i class="fa-light fa-comments-dollar"></i>',
-            transferType: '3',
-            money: money,
-            occurTime: Date.now(),
-            transactionFee,
-            message,
-            isActor: isActor
+        const anotherFilter = {
+            userId: actorId
         }
-        //need admin acceptance
-        if (money > maximumMoney) {
-            data['status'] = '0'; //pending
-            const transferHistory = new TransferHistory(data)
-            await transferHistory.save()
-            .then(savedTransferHistory => {
-                return res.status(200).json({
-                    code: 0,
-                    message: 'Giao dịch chuyển tiền đang đợi admin duyệt',
-                    data: savedTransferHistory
-                })
-            })
-            .catch(err => {
-                return res.status(500).json({
-                    code: 1,
-                    message: 'Giao dịch chuyển tiền thất bại'
-                })
+        const userWallet = await Wallet.findOne(anotherFilter)
+        if (!userWallet || userWallet && userWallet.accountBalance < money) {
+            return res.status(404).json({
+                code: 1,
+                message: 'Số dư trong ví của quý khách không đủ để thực hiện giao dịch'
             })
         }
         else {
-            data['status'] = '1';
-            const transferHistory = new TransferHistory(data)
-            await transferHistory.save()
-            .then(async savedTransferHistory => {
-                const result = await transferHandler(savedTransferHistory)
-                if (result.code === 0) {
-                    return res.status(200).json(result)
-                }
-                return res.status(404).json(result)
-            })
-        }
         
+            const rate = 0.05;
+            const transactionFee = rate * money;
+
+            const maximumMoney = 5000000;
+            const transferActor = await Account.findOne({
+                _id: actorId
+            })
+            const receiver = await Account.findOne({
+                email: receiverEmail
+            })
+            const data = {
+                actor: actorId,
+                receiver: receiver._id,
+                from: transferActor.hoten,
+                to: receiver.hoten,
+                icon: '<i class="fal fa-money-bill"></i>',
+                transferType: '3',
+                money: money,
+                occurTime: Date.now(),
+                transactionFee,
+                message,
+                isActor: isActor
+            }
+            //need admin acceptance
+            if (money > maximumMoney) {
+                data['status'] = '0'; //pending
+                const transferHistory = new TransferHistory(data)
+                await transferHistory.save()
+                .then(async savedTransferHistory => {
+                    await Wallet.findOne({
+                        userId: actorId,
+                    })
+                    .then((wallet) => {
+                        return res.status(200).json({
+                            code: 0,
+                            message: 'Giao dịch chuyển tiền đang đợi admin duyệt',
+                            data: wallet
+                        })
+                    })
+                })
+                .catch(err => {
+                    return res.status(500).json({
+                        code: 1,
+                        message: 'Giao dịch chuyển tiền thất bại'
+                    })
+                })
+            }
+            else {
+                data['status'] = '1';
+                const transferHistory = new TransferHistory(data)
+                await transferHistory.save()
+                .then(async savedTransferHistory => {
+                    const result = await transferHandler(savedTransferHistory, receiverEmail)
+                    if (result.code === 0) {
+                        const amount = savedTransferHistory.money.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})
+                        const announceOfActor = new Announce({
+                            userId: savedTransferHistory.actor,
+                            message: `-${amount} to ${savedTransferHistory.to} because of money transfer`
+                        })
+                        const announceOfReceiver = new Announce({
+                            userId: savedTransferHistory.receiver,
+                            message: `+${amount} from ${savedTransferHistory.from} because of money transfer`
+                        })
+                        await announceOfActor.save()
+                        .then(async () => {
+                            await announceOfReceiver.save()
+                            .then(() => {
+                                return res.status(200).json(result)
+                            })
+                        })
+                    }
+                    else {
+                        return res.status(404).json(result)
+                    }
+                })
+            }
+        }
     },
 
     //mua thẻ điện thoại
@@ -449,10 +511,15 @@ const WalletController = {
                     return `${phoneCard.code}${card}`
                 })
                 const transactionFee = 0;
+                const purchaseActor = await Account.findOne({
+                    _id: actorId
+                })
                 const transferHistory = new TransferHistory({
                     actor: actorId,
                     receiver: actorId,
-                    icon: '<i class="fa-light fa-cart-shopping"></i>',
+                    from: purchaseActor.hoten,
+                    to: purchaseActor.hoten,
+                    icon: '<i class="fad fa-money-bill"></i>',
                     transferType: '4', // buy phone card
                     money: totalCost,
                     occurTime: Date.now(),

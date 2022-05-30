@@ -122,7 +122,7 @@ function moveFile(file, secondLevelFolder, destFolder){
 function mailing(receiverMail, username, pass){
     let transporter = nodemailer.createTransport({
         host: process.env.EMAIL_FOR_SEND_HOST,
-        port: '25',
+        port: process.env.EMAIL_FOR_SEND_PORT,
         secure: false,
         auth: {
             user: process.env.EMAIL_FOR_SEND_NAME,

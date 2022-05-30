@@ -41,6 +41,9 @@ router.put("/updateIdentityCard", middlewareController.authForUnauthUser, UserCo
 //quen mk -> ko login dc -> ko co' token -> bao mat lam sao ???
 router.post("/forgetPassword", userController.forgetPassword)
 
+//xem lich su giao dich
+router.get('/histories', middlewareController.authForUnauthUser, UserController.getHistories)
+
 router.get("/reset_password/:PIN", middlewareController.verifyForResetPassword, (req, res) => {
   return res.redirect(303, '/login')
   //res.send('redirect sang trang first login')

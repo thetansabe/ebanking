@@ -102,7 +102,11 @@
                     </li>
 
                     <li class="list-group-item bill_list-item">
-                        Phone number: <span class="bill_list-item_span phone_number">123456789</span>
+                        Phone number: <span class="bill_list-item_span phone_number">
+                            {{#if data}}
+                                {{data.phonenumber}}
+                            {{/if}}
+                        </span>
                     </li>
 
                     <li class="list-group-item bill_list-item">

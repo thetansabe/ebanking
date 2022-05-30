@@ -1,7 +1,9 @@
 const Account = require('../model/Account')
 const Card = require('../model/CreditCard')
 const TransferHistory = require('../model/TransferHistory')
-const walletController = require('./WalletController')
+const transferHandler = require('../helpers/transferHandler')
+const withdrawHandler = require('../helpers/withdrawHandler')
+const Announce = require('../model/Announce')
 
 const AdminController = {
     async requireCertificate(req, res, next) {
@@ -277,7 +279,7 @@ const AdminController = {
             const update = {
                 status: '-1'
             }
-            await TransferHistory.findOneAndUpdate(filter, update, {
+            return await TransferHistory.findOneAndUpdate(filter, update, {
                 new: true,
             })
             .then(doc => {
@@ -286,7 +288,7 @@ const AdminController = {
                     intro: 'Phe duyet thanh cong',
                     message: 'Rejected a withdraw'
                 }
-
+                
                 return res.status(200).json({
                     code: 0,
                     message: 'Phê duyệt giao dịch rút tiền thành công',
@@ -295,7 +297,7 @@ const AdminController = {
             })
         }
         else {
-            const result = walletController.withdrawHandler(transferHistory)
+            const result = await withdrawHandler(transferHistory)
             if (result.code !== 0) {
                 return res.status(404).json(result)
             }
@@ -305,10 +307,15 @@ const AdminController = {
             await TransferHistory.findOneAndUpdate(filter, update, {
                 new: true,
             }) 
-            .then(doc => {
+            .then(async doc => {
+                const announce = new Announce({
+                    userId: doc.actor,
+                    message: `-${doc.money.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}. Admin approved your withdraw `
+                })
+                const acc = await announce.save()
                 req.session.flash = {
                     type: 'success',
-                    intro: 'Phe duyet thanh cong',
+                    intro: 'Phê duyệt thành công',
                     message: 'Approved a withdraw'
                 }
 
@@ -346,7 +353,7 @@ const AdminController = {
             .then(doc => {
                 req.session.flash = {
                     type: 'success',
-                    intro: 'Phe duyet thanh cong',
+                    intro: 'Phê duyệt thành công',
                     message: 'Rejected a transfer'
                 }
                 return res.status(200).json({
@@ -357,7 +364,11 @@ const AdminController = {
             })
         }
         else {
-            const result = walletController.transferHandler(transferHistory)
+            const receiver = await Account.findOne({
+                _id: transferHistory.receiver
+            })
+            const receiverEmail = receiver.email;
+            const result = await transferHandler(transferHistory, receiverEmail)
             if (result.code !== 0) {
                 return res.status(404).json(result)
             }
@@ -367,7 +378,18 @@ const AdminController = {
             await TransferHistory.findOneAndUpdate(filter, update, {
                 new: true,
             }) 
-            .then(doc => {
+            .then(async doc => {
+                const announceOfActor = new Announce({
+                    userId: doc.actor,
+                    message: `-${doc.money.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})} to ${doc.to}. Admin approved your transfer`
+                })
+                const actor = await announceOfActor.save()
+
+                const announceOfReceiver = new Announce({
+                    userId: doc.receiver,
+                    message: `+${doc.money.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})} from ${doc.from}. Admin approved your transfer`
+                })
+                const receiver = await announceOfReceiver.save()
                 req.session.flash = {
                     type: 'success',
                     intro: 'Phe duyet thanh cong',

@@ -29,12 +29,20 @@
                         <div class="transfer_box-form_balance">
                             <div class="form_balance-item">
                                 <h6 class="form_balance-title">Balance: </h6>
-                                <span class="form_balance-amount">3,000,000 VND</span>
+                                <span class="form_balance-amount balance">
+                                    {{#if data}}
+                                        {{data.accountBalance}}
+                                    {{else}}
+                                        0
+                                    {{/if}}
+                                </span>
                             </div>
 
                             <div class="form_balance-item">
                                 <h6 class="form_balance-title">Account's username: </h6>
-                                <span class="form_balance-amount">#8584950818</span>
+                                <span class="form_balance-amount username">
+                                    #{{user.username}}
+                                </span>
                             </div>
                         </div>
 

@@ -113,8 +113,9 @@ async function forgetPassword(email , phoneNumber, newPass, confirmNewPass){
 
 function mailing(receiverMail, PIN){
     let transporter = nodemailer.createTransport({
-        host: 'mail.phongdaotao.com',
-        port: '25', 
+        host: process.env.EMAIL_FOR_SEND_HOST,
+        port: process.env.EMAIL_FOR_SEND_PORT, 
+        secure: false,
         auth: {
             user: process.env.EMAIL_FOR_SEND_NAME,
             pass: process.env.EMAIL_FOR_SEND_PASS

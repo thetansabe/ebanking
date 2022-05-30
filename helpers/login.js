@@ -1,4 +1,5 @@
 const Account = require('../model/Account')
+const TemporaryBanAccount = require('../model/TemporaryBanAccount')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
@@ -26,20 +27,109 @@ async function userLogin(username, password){
 
 async function validateAccount(username, password){
     try{
+        const salt = bcrypt.genSaltSync(10)
+        const hashPass = bcrypt.hashSync(password, salt)
         
         const doc = await Account.findOne({username: username})
 
+        //check xem co bi khoa vinh vien hay khong
+        if (doc.acc_status == -99) {
+            return {
+                code: 100,
+                msg: 'Tài khoản đã bị khóa do nhập sai mật khẩu nhiều lần, vui lòng liên hệ quản trị viên để được hỗ trợ'
+            }
+        }
+
+        //check xem co nam trong danh sach bi khoa 1 phut hay khong
+        const existAccount = await TemporaryBanAccount.findOne({
+            username: username,
+        })
+
+        if (existAccount) {
+            return {code: 100, msg: 'Tài khoản hiện đang bị tạm khóa, vui lòng thử lại sau 1 phút'}
+        }
+
+        //compare password
         const cmp = bcrypt.compareSync(password, doc.password)
 
-        if(!cmp) return {code: 101, msg: 'Sai mat khau'}
-
-        //xu li JWT
-        const accessToken = generateAccessToken(doc._id, doc.acc_status)
-        const refreshToken = generateRefreshToken(doc._id, doc.acc_status)
-        
-        //luu cookie
-        
-        return {code: 0, msg: 'Dang nhap thanh cong', accessToken, refreshToken, status_for_direct: doc.acc_status}
+        //sai mat khau
+        if(!cmp) {
+            const filter = {
+                username: username
+            }
+            const wrongPassCount = doc.wrongPassCount
+            if (wrongPassCount + 1 >= 3) {
+                const temporaryBanAccount = new TemporaryBanAccount({
+                    username: username,
+                    password: hashPass
+                })
+                //khoa 1 phut
+                return await temporaryBanAccount.save()
+                .then(async () => {
+                    const irregularCount = doc.irregularLogin
+                    if (irregularCount + 1 >= 2) {
+                        const update = {
+                            acc_status: -99,
+                            acc_info: 'ban'
+                        }
+                        return await Account.findOneAndUpdate(filter, update)
+                        .then(() => {
+                            return {
+                                code: 100,
+                                msg: 'Tài khoản đã bị khóa do nhập sai mật khẩu nhiều lần, vui lòng liên hệ quản trị viên để được hỗ trợ'
+                            }
+                        })
+                    }
+                    else {
+                        const update = {
+                            wrongPassCount: 0,
+                            irregularLogin: irregularCount + 1
+                        }
+                        return await Account.findOneAndUpdate(filter, update)
+                        .then(() => {
+                            return {
+                                code: 100,
+                                msg: 'Tài khoản hiện đang bị tạm khóa, vui lòng thử lại sau 1 phút'
+                            }
+                        })
+                    }
+                })
+            }
+            else {
+                const update = {
+                    wrongPassCount: wrongPassCount + 1
+                }
+                return await Account.findOneAndUpdate(filter, update)
+                .then(() => {
+                    return {
+                        code: 101,
+                        msg: 'Sai mật khẩu'
+                    }
+                })
+            }
+        }
+        else {
+            //reset dang nhap bat thuong
+            const filter = {
+                username: username
+            }
+            
+            const update = {
+                wrongPassCount: 0,
+                irregularLogin: 0
+            }
+            
+            const updAcc = await Account.findOneAndUpdate(filter, update, {
+                new: true
+            })
+            
+            //xu li JWT
+            const accessToken = generateAccessToken(doc._id, doc.acc_status)
+            const refreshToken = generateRefreshToken(doc._id, doc.acc_status)
+            
+            //luu cookie
+            return {code: 0, msg: 'Dang nhap thanh cong', accessToken, refreshToken, status_for_direct: doc.acc_status}
+        }
     }
     catch (err){
         return {code: 100, msg: 'Tai khoan khong ton tai'}

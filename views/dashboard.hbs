@@ -21,11 +21,11 @@
                                     <div class="brief_info-account">
                                         <div class="brief_info-user">
                                             <p class="brief_info-user_title">Balance</p>
-                                            <span class="brief_info-user_data">
+                                            <span class="brief_info-user_data balance">
                                                 {{#if data}}
-                                                    {{data.accountBalance}} VND
+                                                    {{data.accountBalance}}
                                                 {{else}}
-                                                    0 VND
+                                                    0
                                                 {{/if}}
                                             </span>
                                         </div>
@@ -54,154 +54,30 @@
                                         </div>
                                     </div> -->
                                     <div class="row">
-
-                                        <div class="dashboard_history-left col-lg-5 col-md-7">
+                                        <div class="dashboard_history-left col-lg-4 col-md-4">
                                             <h5 class="dashboard_history-title">Payment History</h5>
 
                                             <!-- helper hbs here -->
                                             <div class="transfer-source brief_box" onclick="viewTransferDetailInfo()">
-                                                    <div class="transfer-source_avatar-box">
-                                                        <img src="/images/avatar/unknown_male.png" class="transfer-source-avatar" alt="avatar">
-                                                    </div>
-
-                                                <div class="transfer-source_brief-box">
-                                                    <div class="transfer-source-name">
-                                                        Monika
-                                                    </div>
-
-                                                    <div class="transfer-source-message">
-                                                        Many many luck returns the day, hope you have a great day too.
-                                                    </div>
-                                                </div>
+                                                    
+                                                
                                             </div>
-
-                                            <div class="transfer-source brief_box" onclick="viewTransferDetailInfo()">
-                                                    <div class="transfer-source_avatar-box">
-                                                        <img src="/images/avatar/unknown_male.png" class="transfer-source-avatar" alt="avatar">
-                                                    </div>
-
-                                                <div class="transfer-source_brief-box">
-                                                    <div class="transfer-source-name">
-                                                        Monika
-                                                    </div>
-
-                                                    <div class="transfer-source-message">
-                                                        Many many luck returns the day, hope you have a great day too.
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="transfer-source brief_box" onclick="viewTransferDetailInfo()">
-                                                    <div class="transfer-source_avatar-box">
-                                                        <img src="/images/avatar/unknown_male.png" class="transfer-source-avatar" alt="avatar">
-                                                    </div>
-
-                                                <div class="transfer-source_brief-box">
-                                                    <div class="transfer-source-name">
-                                                        Monika
-                                                    </div>
-
-                                                    <div class="transfer-source-message">
-                                                        Many many luck returns the day, hope you have a great day too.
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="transfer-source brief_box" onclick="viewTransferDetailInfo()">
-                                                    <div class="transfer-source_avatar-box">
-                                                        <img src="/images/avatar/unknown_male.png" class="transfer-source-avatar" alt="avatar">
-                                                    </div>
-
-                                                <div class="transfer-source_brief-box">
-                                                    <div class="transfer-source-name">
-                                                        Monika
-                                                    </div>
-
-                                                    <div class="transfer-source-message">
-                                                        Many many luck returns the day, hope you have a great day too.
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="transfer-source brief_box" onclick="viewTransferDetailInfo()">
-                                                    <div class="transfer-source_avatar-box">
-                                                        <img src="/images/avatar/unknown_male.png" class="transfer-source-avatar" alt="avatar">
-                                                    </div>
-
-                                                <div class="transfer-source_brief-box">
-                                                    <div class="transfer-source-name">
-                                                        Monika
-                                                    </div>
-
-                                                    <div class="transfer-source-message">
-                                                        Many many luck returns the day, hope you have a great day too.
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="transfer-source brief_box" onclick="viewTransferDetailInfo()">
-                                                    <div class="transfer-source_avatar-box">
-                                                        <img src="/images/avatar/unknown_male.png" class="transfer-source-avatar" alt="avatar">
-                                                    </div>
-
-                                                <div class="transfer-source_brief-box">
-                                                    <div class="transfer-source-name">
-                                                        Monika
-                                                    </div>
-
-                                                    <div class="transfer-source-message">
-                                                        Many many luck returns the day, hope you have a great day too.
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            
                                         </div>
                                         
-                                        <div class="dashboard_history-middle col-lg-3 col-md-0">
+                                        <div class="dashboard_history-middle col-lg-4 col-md-4">
                                             <div class="right_attribute-date">Date</div>
 
                                             <!-- helper hbs here -->
-                                            <div class="transfer-source">
-                                                <div class="transfer-source-date">
-                                                    21 Jan, 2020
-                                                </div>
-                                            </div>
-
-                                            <div class="transfer-source">
-                                                <div class="transfer-source-date">
-                                                    21 Jan, 2020
-                                                </div>
-                                            </div>
-
-                                            <div class="transfer-source">
-                                                <div class="transfer-source-date">
-                                                    21 Jan, 2020
-                                                </div>
-                                            </div>
+                                           
                                         </div>
 
     
-                                        <div class="dashboard_history-right col-lg-4 col-md-5">
+                                        <div class="dashboard_history-right col-lg-4 col-md-4">
                                             <div class="right_attribute-debit">Debit</div>
 
                                             <!-- helper hbs here -->
-                                            <div class="transfer-source">
-                                                <div class="transfer-source-debit receive">
-                                                    300,000 VND
-                                                </div>
-                                            </div>
+                                           
 
-                                            <div class="transfer-source">
-                                                <div class="transfer-source-debit send">
-                                                    300,000,000 VND
-                                                </div>
-                                            </div>
-
-                                            <div class="transfer-source">
-                                                <div class="transfer-source-debit send">
-                                                    300,000,000,000,000,000,000 VND
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -217,17 +93,8 @@
                             <div class="notifications">
                                 <h5 class="notifications-title">Latest notifications</h5>
                                 
-                                <!-- if else hbs here -->
-                                <span class="notifications-empty">There is no notifcation</span>
-                                
                                 <ul class="notifications-list list-group list-group-flush">
-                                    <li class="notifications-item list-group-item">
-                                        Cannot access full service. Your account is unauthorized. Please check in Profile section
-                                    </li>
-
-                                    <li class="notifications-item list-group-item">
-                                        +300,000 VND from Monika, account number: 2223324469
-                                    </li>
+                                    
                                 </ul>
                             </div>
                         </div>
@@ -250,12 +117,12 @@
       <div class="modal-body detail_container">
           <div class="detail_box">
               <h6 class="detail_box-title">Actor</h6>
-              <p class="detail_box-value">Monika</p>
+              <p class="detail_box-value username">Monika</p>
           </div>
 
           <div class="detail_box">
               <h6 class="detail_box-title">Service</h6>
-              <p class="detail_box-value">Transfer</p>
+              <p class="detail_box-value transferType">Transfer</p>
           </div>
 
           <div class="detail_box">
@@ -265,25 +132,45 @@
 
           <div class="detail_box">
               <h6 class="detail_box-title">Amount</h6>
-              <p class="detail_box-value send">2,000,000 VND</p>
+              <p class="detail_box-value amount">2,000,000 VND</p>
           </div>
 
           <div class="detail_box">
               <h6 class="detail_box-title">Date</h6>
-              <p class="detail_box-value send">26/2/2020</p>
+              <p class="detail_box-value occur">26/2/2020</p>
           </div>
 
           <div class="detail_box">
               <h6 class="detail_box-title">Fee</h6>
-              <p class="detail_box-value send">1,233 VND</p>
+              <p class="detail_box-value fee">1,233 VND</p>
           </div>
 
       </div>
 
       <div class="detail_box-message">
               <h6 class="detail_box-title">Message</h6>
-              <p class="detail_box-value">Hello friend Hello friendHello friendHello friendHello friendHello friendHello friendHello friendHello friendHello friend</p>
-          </div>
+              <p class="detail_box-value message">Hello friend Hello friendHello friendHello friendHello friendHello friendHello friendHello friendHello friendHello friend</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="dashboard_card_detail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Purchase successfully</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h3>Recharge Code: </h3>
+        <div class="dashboard_purchase_success-box">
+            <h6 class="purchase_success-box_title">11117345 - Viettel</h6>
+            <p class="purchase_success-box_code">*100*342542345234592385#</p>
+        </div>
       </div>
     </div>
   </div>
